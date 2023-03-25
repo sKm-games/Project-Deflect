@@ -198,9 +198,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af10d2814d2ef26459c039fe17727226, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  score: 0
   gameController: {fileID: 0}
-  explosion: {fileID: 0}
+  score: 100
+  lifeTime: 10
+  explosion: {fileID: 3209873479922826428, guid: 29710561672d33942b85a04fd057a6e3,
+    type: 3}
 --- !u!82 &3560639257871014047
 AudioSource:
   m_ObjectHideFlags: 0
@@ -308,7 +310,7 @@ GameObject:
   - component: {fileID: 8247962625318389840}
   - component: {fileID: 8247962625318389841}
   m_Layer: 8
-  m_Name: EnemyGraphics
+  m_Name: ProjetileGraphics
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -392,7 +394,7 @@ GameObject:
   - component: {fileID: 8247962625423119097}
   - component: {fileID: 6290703729773368632}
   m_Layer: 8
-  m_Name: EnemyEffect
+  m_Name: ProjectileEffect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

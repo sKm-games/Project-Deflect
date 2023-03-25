@@ -6,32 +6,44 @@ using TMPro;
 
 public class GameController : MonoBehaviour
 {
-    [SerializeField] private int lifes, level, score;
-    [SerializeField] private GameObject gameOverScreen;
-    [SerializeField] private TextMeshProUGUI scoreText, levelText;    
-    [SerializeField] private ProjectileController projectileController;
-    [SerializeField] private BlockerController blockerController;    
-    [SerializeField] private float shakeDuration;
+    [SerializeField] private UIController uiController;
+    [SerializeField] private LevelController levelController;
+    private ProjectileController projectileController;
+    private DifficultyController difficultyController;
+    [SerializeField] private BlockerController blockerController;
 
     private bool gameIsRunning;
-    private Vector3 camStartPos;
-
-    private void Start()
+    public bool GameIsRunning
     {
-        camStartPos = Camera.main.transform.position;
-        gameOverScreen.SetActive(false);
-        UpdateScore(0);
+        get
+        {
+            return gameIsRunning;
+        }
     }
 
-    public void StartGame()
+    [SerializeField] private int lifes;
+    [SerializeField] private int score;
+
+    private void Awake()
     {
+        projectileController = levelController.GetComponent<ProjectileController>();
+        difficultyController = levelController.GetComponent<DifficultyController>();
+        blockerController.ToggleBlocker(false);    
+        UpdateScore(0);
+
+        levelController.Init();
+    }
+
+    public void StartGame(int d)
+    {        
         if (!gameIsRunning)
         {
             Debug.Log("Start Game");
-            gameIsRunning = true;
-            projectileController.FindEnemies(level);            
-            level++;
-            levelText.text = "Level: " + level;
+            score = 0;
+            difficultyController.SetDifficutly(d);
+            levelController.SetupLevel();
+            gameIsRunning = true;            
+            blockerController.Init(difficultyController.GetCurrentDifficulty);
             blockerController.ToggleBlocker(true);
         }
     }
@@ -43,11 +55,15 @@ public class GameController : MonoBehaviour
 
     public void UpdateLifes(int a)
     {
-        int templifes = lifes;
+        if (DebugController.infiniteLife)
+        {
+            return;
+        }
+
         lifes += a;
 
         if (lifes <= 0)
-        {
+        {            
             GameIsOver();
         }
     }
@@ -55,36 +71,23 @@ public class GameController : MonoBehaviour
     public void UpdateScore(int a)
     {
         score += a;
-        scoreText.text = "Score: " + score;
+        uiController.UpdateScoreText(score);
     }
 
-    public void RoundOver()
+    private void GameIsOver()
     {
-        if (gameIsRunning)
-        {
-            level++;
-            levelText.text = "Level: " + level;
-            projectileController.SpawnEnemy(level);
-
-        }
-    }
-
-    void GameIsOver()
-    {
+        Debug.Log("GameController: GameIsOver");
         gameIsRunning = false;
         blockerController.ToggleBlocker(false);
-        gameOverScreen.SetActive(true);
-        TextMeshProUGUI t = gameOverScreen.GetComponentInChildren<TextMeshProUGUI>();
-        t.text = "Game Over!\nTo much of the city is destroyed,\nthere is no stopping them now\n\nScore: " + score + "\n\nTry again?";
+        uiController.ToggleGameOverScreen(true, false, score);
     }
 
     public void Winner()
     {
+        Debug.Log("GameController: Winner");
         gameIsRunning = false;
         blockerController.ToggleBlocker(false);
-        gameOverScreen.SetActive(true);
-        TextMeshProUGUI t = gameOverScreen.GetComponentInChildren<TextMeshProUGUI>();
-        t.text = "Winner!\nLook like they are out of ammo.\nYou saved the town\n\nScore: " + score + "\n\nTry again?";
+        uiController.ToggleGameOverScreen(true, true, score);
     }
 
     public void Restart()

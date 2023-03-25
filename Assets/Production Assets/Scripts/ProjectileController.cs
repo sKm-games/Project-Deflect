@@ -4,182 +4,96 @@ using UnityEngine;
 
 public class ProjectileController : MonoBehaviour
 {
-    [SerializeField] GameController gameController;
+    [SerializeField] private GameController gameController;    
+    private DifficultyController difficultyController;
+    private LevelController levelController;
+    
+    
+    [SerializeField] private Transform projectileHolder;
+    [SerializeField] private List<ProjectileObject> projectilesList;
+    [SerializeField] bool allowNewProjectile;
 
-    [SerializeField] private List<Transform> spawnPointList;
-    [SerializeField] bool allowNew;
-    [SerializeField] private List<Rigidbody2D> projectilesList;    
-    [SerializeField] private List<TargetObject> targetsList;
-    [SerializeField] float launchSpeed;
-    [SerializeField] float aimdelay;
-    [SerializeField] float shootdelay;
-    [SerializeField] List<int> levelInfo;
-
-    private int shoots;
-    private int pt = 0;
-    private int index = 0;
-
-    private AudioSource shootEffect;
+    private AudioSource shootEffectSource;   
 
     void Start()
-    {        
-        foreach (Rigidbody2D rb in projectilesList)
+    {
+        difficultyController = this.GetComponent<DifficultyController>();
+        levelController = this.GetComponent<LevelController>();
+        shootEffectSource = this.GetComponent<AudioSource>();
+
+        projectilesList = new List<ProjectileObject>(projectileHolder.GetComponentsInChildren<ProjectileObject>());
+
+        foreach (ProjectileObject rb in projectilesList)
         {
             rb.gameObject.SetActive(false);
-        }
-        shootEffect = GetComponent<AudioSource>();
-        gameController.SetLifes(targetsList.Count);
+        }        
     }
 
-    private void Update()
+    public void DoLaunchProjectile(SpawnpointObject sp)
     {
-        if (Input.GetButtonDown("Jump"))
-        {
-            levelInfo.Shuffle();
-            SpawnEnemy(levelInfo[0]);
-        }
+        StartCoroutine(IELaunchProjectile(sp));
     }
 
-    public void FindEnemies(int a)
-    {     
-        if (a >= levelInfo.Count)
-        {
-            gameController.Winner();
-            return;
-        }
-
-        int amount = levelInfo[a];
-        SpawnEnemy(amount);
-    }
-
-    public void SpawnEnemy(int a)
-    {        
-        IEnumerator s = IESpawnEnemies(a);
-        StartCoroutine(s);
-    }
-
-    IEnumerator IESpawnEnemies(int a)
-    {     
-        List<Transform> activeSpawn = new List<Transform>(spawnPointList);
-        activeSpawn.Shuffle();
-        shoots = 0;
-        for (int i = 0; i < a; i++)
-        {
-            if (activeSpawn.Count == 0)
-            {
-                activeSpawn = new List<Transform>(spawnPointList);
-                activeSpawn.Shuffle();
-            }
-
-            activeSpawn.Shuffle();
-
-            Transform spawn = activeSpawn[0];
-            activeSpawn.RemoveAt(0);
-
-            if (targetsList.Count == 0)
-            {
-                yield break;
-            }
-
-            IEnumerator s = IESpawnEnemy(spawn);
-            StartCoroutine(s);
-
-            yield return new WaitForSeconds((shootdelay * 1.5f));
-        }
-
-        while (shoots < a)
-        {
-            yield return null;
-        }
-        yield return new WaitForSeconds(2f);
-        gameController.RoundOver();
-    }
-
-    IEnumerator IESpawnEnemy(Transform spawnPoint)
+    IEnumerator IELaunchProjectile(SpawnpointObject sp)
     {
-        targetsList.Shuffle();
-        if (targetsList[0].Dead)
-        {
-            targetsList.RemoveAt(0);
-            targetsList.Shuffle();
-        }
-        if (targetsList.Count == 0)
-        {
-            //no more buildings
-            yield break;
-        }
-        Transform target = targetsList[0].transform;
+        //calc aim offesets        
+        Transform target = levelController.GetTarget();
+        Debug.Log($"ProjectileController: {sp.transform.name} to {target.name}");
         float offset = Random.Range(-0.25f, 0.25f);
         float x = target.position.x + offset;
 
-        x += spawnPoint.position.x < 0 ? 2 : -2;
+        x += sp.transform.position.x < 0 ? 2 : -2;
 
         offset = Random.Range(-0.25f, 0.25f);
         float y = target.position.y + offset;
 
-        y += spawnPoint.position.y < 0 ? 2 : -2;
+        y += sp.transform.position.y < 0 ? 2 : -2;
 
+        //get target pos
         Vector3 targetPos = new Vector3(x, y, 0);
-        pt = index;
 
-        LineRenderer lr = spawnPoint.GetComponent<LineRenderer>();
-        Color c = lr.startColor;
-        c = new Color(c.r, c.g, c.b, 0);
-        lr.startColor = c;
-        lr.endColor = c;
+        DifficultyDataClass data = difficultyController.GetCurrentDifficulty;
 
-        lr.startWidth = 0.05f;
-        lr.endWidth = 0.05f;
-
-        lr.SetPosition(0, spawnPoint.position);
-        lr.SetPosition(1, targetPos);
+        sp.SetAimInfo(data.AimLaserSize, data.AimLaserColor, targetPos);
 
         float alpha = 0;
 
         while (alpha < 1)
         {
-            alpha += (Time.deltaTime * aimdelay);
-            c = new Color(c.r, c.g, c.b, alpha);
-            lr.startColor = c;
-            lr.endColor = c;
+            alpha += (Time.deltaTime * data.AimTime);
+            sp.UpdateLaserAlpha(alpha);
             yield return null;
         }
 
-        lr.startWidth = 0.075f;
-        lr.endWidth = 0.075f;
-        yield return new WaitForSeconds(shootdelay / 2);
+        sp.SetShootInfo(data.ShotLaserSize, data.ShotLaserColor);
+        yield return new WaitForSeconds(data.ShotTime);
 
-        c = new Color(c.r, c.g, c.b, 0);
-        lr.startColor = c;
-        lr.endColor = c;
+        sp.UpdateLaserAlpha(0);
 
-        Vector2 direction = targetPos - spawnPoint.position;
+        ProjectileObject p = GetProjectile();
+        p.Launch(sp.transform, data.ProjectileSpeed);
 
-        spawnPoint.transform.up = direction;
+        shootEffectSource.PlayOneShot(data.ShootClip);
 
-        Rigidbody2D enemy = PoolEnemy();
-        enemy.transform.position = spawnPoint.position;
-        enemy.gameObject.SetActive(true);
-        enemy.velocity = spawnPoint.up * launchSpeed;
-        shootEffect.PlayOneShot(shootEffect.clip);
-        shoots++;
+        sp.IsReady = true;
     }
 
-    private Rigidbody2D PoolEnemy()
+    private ProjectileObject GetProjectile()
     {
-        foreach (Rigidbody2D p in projectilesList)
+        foreach (ProjectileObject p in projectilesList)
         {
             if (!p.gameObject.activeInHierarchy)
             {
                 return p;
             }
         }
-        if (!allowNew)
+        if (!allowNewProjectile)
         {
+            Debug.LogWarning("ProjectileController: No avaible projectile and not allow to make more");
             return null;
         }
 
-        Rigidbody2D np = Instantiate(projectilesList[0], projectilesList[0].transform.parent);
+        ProjectileObject np = Instantiate(projectilesList[0], projectilesList[0].transform.parent);
         projectilesList.Add(np);
 
         return np;
@@ -194,5 +108,6 @@ public class ProjectileController : MonoBehaviour
         }
         return r;
     }
+
 }
 

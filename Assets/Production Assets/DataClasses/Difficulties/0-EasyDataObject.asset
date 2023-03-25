@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6310664a87e27c40abd08d233530378, type: 3}
+  m_Name: 0-EasyDataObject
+  m_EditorClassIdentifier: 
+  ID: 0
+  Name: Easy
+  BackgroundSprite: {fileID: 21300000, guid: 1b730abb058d1c0409754bba9d266caf, type: 3}
+  GroundSprite: {fileID: 21300000, guid: 66e97fa1f8e283e44b9c0b29e4a21607, type: 3}
+  MoonSprite: {fileID: 21300000, guid: 66e97fa1f8e283e44b9c0b29e4a21607, type: 3}
+  AimTime: 0.75
+  ShotTime: 0.5
+  NextShotDelay: 0.75
+  NextLevelDelay: 4
+  AimLaserSize: 0.05
+  AimLaserColor: {r: 1, g: 0, b: 0, a: 1}
+  ShotLaserSize: 0.075
+  ShotLaserColor: {r: 0.8289864, g: 1, b: 0, a: 1}
+  TargetAmount: 4
+  TargetPrefab: {fileID: 4595119058587561198, guid: 4325310eb703ae2498c85b3b62465bc4,
+    type: 3}
+  BlockerScale: {x: 1.5, y: 0.25}
+  BlockerColor: {r: 0.033018887, g: 1, b: 0.05503421, a: 1}
+  ProjectileSpeed: 65
+  LevelsProjectiles: 0100000001000000020000000100000003000000020000000300000002000000040000000200000004000000020000000300000004000000020000000300000004000000050000000300000006000000
+  MusicClip: {fileID: 0}
+  ShootClip: {fileID: 8300000, guid: 3e8e7c543abfabc4f9b8ea9f6b5d721c, type: 3}

@@ -5052,7 +5052,7 @@ ParticleSystemRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1135456837
   m_SortingLayer: 2
-  m_SortingOrder: 4
+  m_SortingOrder: 10
   m_RenderMode: 0
   m_MeshDistribution: 0
   m_SortMode: 0
@@ -5097,7 +5097,7 @@ GameObject:
   - component: {fileID: 4595119058587561195}
   - component: {fileID: 4595119058587561193}
   m_Layer: 0
-  m_Name: BuildingPrefab
+  m_Name: TargetPrefab
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5160,7 +5160,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1135456837
   m_SortingLayer: 2
-  m_SortingOrder: 1
+  m_SortingOrder: 5
   m_Sprite: {fileID: 21300000, guid: 98bb8604a6c7db44380594df9082b4b0, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -5184,9 +5184,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9df1e27e58c3c6147b3b57bafbdf1008, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buildingSprites: []
   gameController: {fileID: 0}
-  hp: 0
+  buildingSprites: []
+  health: 0
 --- !u!61 &4595119058587561195
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -10213,7 +10213,7 @@ ParticleSystemRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1135456837
   m_SortingLayer: 2
-  m_SortingOrder: 4
+  m_SortingOrder: 10
   m_RenderMode: 0
   m_MeshDistribution: 0
   m_SortMode: 0
@@ -15037,7 +15037,7 @@ ParticleSystemRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1135456837
   m_SortingLayer: 2
-  m_SortingOrder: 4
+  m_SortingOrder: 10
   m_RenderMode: 0
   m_MeshDistribution: 0
   m_SortMode: 0
@@ -19861,7 +19861,7 @@ ParticleSystemRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1135456837
   m_SortingLayer: 2
-  m_SortingOrder: 4
+  m_SortingOrder: 10
   m_RenderMode: 0
   m_MeshDistribution: 0
   m_SortMode: 0
@@ -24685,7 +24685,7 @@ ParticleSystemRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1135456837
   m_SortingLayer: 2
-  m_SortingOrder: 4
+  m_SortingOrder: 10
   m_RenderMode: 0
   m_MeshDistribution: 0
   m_SortMode: 0
@@ -29731,7 +29731,7 @@ ParticleSystemRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1135456837
   m_SortingLayer: 2
-  m_SortingOrder: 4
+  m_SortingOrder: 10
   m_RenderMode: 0
   m_MeshDistribution: 0
   m_SortMode: 0

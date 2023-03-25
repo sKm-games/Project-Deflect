@@ -21,7 +21,7 @@ namespace LDPrototype
             }
         }
         AudioSource fireEffect;
-        BoxCollider2D collider;
+        BoxCollider2D boxCollider;
 
 
         private void Start()
@@ -30,7 +30,7 @@ namespace LDPrototype
             lights = new List<UnityEngine.Rendering.Universal.Light2D>(this.transform.GetComponentsInChildren<UnityEngine.Rendering.Universal.Light2D>());
             fire = new List<ParticleSystem>(this.transform.GetComponentsInChildren<ParticleSystem>());
             fireEffect = GetComponent<AudioSource>();
-            collider = GetComponent<BoxCollider2D>();
+            boxCollider = GetComponent<BoxCollider2D>();
 
             foreach (ParticleSystem p in fire)
             {
@@ -77,7 +77,7 @@ namespace LDPrototype
             fire[4].gameObject.SetActive(false);
             fire[5].gameObject.SetActive(false);
 
-            collider.enabled = false;
+            boxCollider.enabled = false;
 
             gameController.UpdateLifes(-1);
             spriteRenderer.sprite = buildingSprites[1];

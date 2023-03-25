@@ -15,13 +15,11 @@ public class BlockerController : MonoBehaviour
 
     [SerializeField] private Transform blockerPivot;
     [SerializeField] private float rotationLimit;
+       
 
-    private void Start()
-    {
-
-    }
-
-    void Update()
+    [SerializeField] private SpriteRenderer blockerObject;
+    
+    private void Update()
     {
         if (allowMove)
         {
@@ -29,7 +27,13 @@ public class BlockerController : MonoBehaviour
         }
     }
 
-    void RotateBlocker() //rotatet toward mouse
+    public void Init(DifficultyDataClass data)
+    {
+        blockerObject.transform.localScale = data.BlockerScale;
+        blockerObject.color = data.BlockerColor;
+    }
+
+    private void RotateBlocker() //rotatet toward mouse
     {
         Vector3 mousePos = Input.mousePosition;
         mousePos = Camera.main.ScreenToWorldPoint(mousePos);

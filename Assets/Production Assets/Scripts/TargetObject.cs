@@ -4,38 +4,48 @@ using UnityEngine;
 
 public class TargetObject : MonoBehaviour
 {
-    [SerializeField] List<Sprite> buildingSprites;
-    private SpriteRenderer spriteRenderer;
-    [SerializeField] GameController gameController;
-    List<UnityEngine.Rendering.Universal.Light2D> lights;
-    List<ParticleSystem> fire;
-    [SerializeField] int hp;
-    bool dead;
-    public bool Dead
+    [SerializeField] private GameController gameController;
+
+    [SerializeField] private List<Sprite> buildingSprites;
+    private SpriteRenderer spriteRenderer;    
+    private List<UnityEngine.Rendering.Universal.Light2D> lights;
+    private List<ParticleSystem> fireParticles;
+    private int fireIndex;
+
+    [SerializeField] int health;
+    bool isDead;
+    public bool IsDead
     {
         get
         {
-            return dead;
+            return isDead;
         }
     }
-    AudioSource fireEffect;
-    BoxCollider2D collider;
+    private AudioSource fireEffect;
+    private BoxCollider2D targetCollider;
 
 
-    private void Start()
+    private void Awake()
     {
         spriteRenderer = this.GetComponent<SpriteRenderer>();
         lights = new List<UnityEngine.Rendering.Universal.Light2D>(this.transform.GetComponentsInChildren<UnityEngine.Rendering.Universal.Light2D>());
-        fire = new List<ParticleSystem>(this.transform.GetComponentsInChildren<ParticleSystem>());
-        fireEffect = GetComponent<AudioSource>();
-        collider = GetComponent<BoxCollider2D>();
 
-        foreach (ParticleSystem p in fire)
+        fireEffect = GetComponent<AudioSource>();
+        targetCollider = GetComponent<BoxCollider2D>();
+
+
+    }
+
+    public void Init()
+    {
+        fireParticles = new List<ParticleSystem>(this.transform.GetComponentsInChildren<ParticleSystem>());
+
+        foreach (ParticleSystem p in fireParticles)
         {
             p.gameObject.SetActive(false);
         }
 
-        //spriteRenderer.sprite = buildingSprites[spriteRef];
+        fireIndex = fireParticles.Count;
     }
 
     public void TakeDamage()
@@ -44,17 +54,25 @@ public class TargetObject : MonoBehaviour
         {
             fireEffect.Play();
         }
-        if (hp <= 0)
+        if (health <= 0)
         {
             return;
         }
-        hp--;
-        fire[hp].gameObject.SetActive(true);
-        hp--;
-        fire[hp].gameObject.SetActive(true);
 
-        if (hp <= 0)
+        health--;
+
+        fireIndex--;
+        fireParticles[fireIndex].gameObject.SetActive(true);
+        fireIndex--;
+        fireParticles[fireIndex].gameObject.SetActive(true);
+
+        if (health <= 0)
         {
+            if (DebugController.infiniteLife)
+            {
+                return;
+            }
+
             RemoveBuilding();
             return;
         }
@@ -64,18 +82,18 @@ public class TargetObject : MonoBehaviour
     void RemoveBuilding()
     {
         //animations of something....
-        dead = true;
+        isDead = true;
         lights[2].gameObject.SetActive(false);
         lights[3].gameObject.SetActive(false);
         lights[4].gameObject.SetActive(false);
         lights[5].gameObject.SetActive(false);
 
-        fire[2].gameObject.SetActive(false);
-        fire[3].gameObject.SetActive(false);
-        fire[4].gameObject.SetActive(false);
-        fire[5].gameObject.SetActive(false);
+        fireParticles[2].gameObject.SetActive(false);
+        fireParticles[3].gameObject.SetActive(false);
+        fireParticles[4].gameObject.SetActive(false);
+        fireParticles[5].gameObject.SetActive(false);
 
-        collider.enabled = false;
+        targetCollider.enabled = false;
 
         gameController.UpdateLifes(-1);
         spriteRenderer.sprite = buildingSprites[1];
