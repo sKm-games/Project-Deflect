@@ -2,15 +2,61 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using TMPro;
+using DG.Tweening;
 
 public class GameController : MonoBehaviour
 {
     [SerializeField] private UIController uiController;
+    [SerializeField] private ScoreController scoreController;
+    public ScoreController GetScoreController
+    {
+        get
+        {
+            return scoreController;
+        }
+    }
     [SerializeField] private LevelController levelController;
+    [SerializeField] private SaveManager saveManager;
+    public SaveManager GetSaveManager
+    {
+        get
+        {
+            return saveManager;
+        }
+    }
     private ProjectileController projectileController;
+    public ProjectileController GetProjectilesController
+    {
+        get
+        {
+            return projectileController;
+        }
+    }
     private DifficultyController difficultyController;
+    public DifficultyController GetDifficultyController
+    {
+        get
+        {
+            return difficultyController;
+        }
+    }
     [SerializeField] private BlockerController blockerController;
+    public BlockerController GetBlockerController
+    {
+        get
+        {
+            return blockerController;
+        }
+    }
+
+    [SerializeField] private SoundController soundController;
+    public SoundController GetSoundController
+    {
+        get
+        {
+            return soundController;
+        }
+    }
 
     private bool gameIsRunning;
     public bool GameIsRunning
@@ -22,16 +68,18 @@ public class GameController : MonoBehaviour
     }
 
     [SerializeField] private int lifes;
-    [SerializeField] private int score;
 
     private void Awake()
     {
         projectileController = levelController.GetComponent<ProjectileController>();
         difficultyController = levelController.GetComponent<DifficultyController>();
         blockerController.ToggleBlocker(false);    
-        UpdateScore(0);
+        levelController.Init();        
+    }
 
-        levelController.Init();
+    private void Start()
+    {
+        saveManager.GetSaveInfo();
     }
 
     public void StartGame(int d)
@@ -39,11 +87,13 @@ public class GameController : MonoBehaviour
         if (!gameIsRunning)
         {
             Debug.Log("Start Game");
-            score = 0;
+            scoreController.ResetScore();
             difficultyController.SetDifficutly(d);
             levelController.SetupLevel();
             gameIsRunning = true;            
             blockerController.Init(difficultyController.GetCurrentDifficulty);
+            uiController.UpdateLevelText(0);
+            uiController.UpdateScoreText(0);
             blockerController.ToggleBlocker(true);
         }
     }
@@ -55,7 +105,7 @@ public class GameController : MonoBehaviour
 
     public void UpdateLifes(int a)
     {
-        if (DebugController.infiniteLife)
+        if (DebugSystem.InfinitLife)
         {
             return;
         }
@@ -68,18 +118,13 @@ public class GameController : MonoBehaviour
         }
     }
 
-    public void UpdateScore(int a)
-    {
-        score += a;
-        uiController.UpdateScoreText(score);
-    }
-
     private void GameIsOver()
     {
         Debug.Log("GameController: GameIsOver");
         gameIsRunning = false;
         blockerController.ToggleBlocker(false);
-        uiController.ToggleGameOverScreen(true, false, score);
+        uiController.ToggleGameOverScreen(true, false, scoreController.GetTotalScore);
+        saveManager.AddToSave(difficultyController.GetCurrentDifficulty.ID, scoreController.GetTotalScore, scoreController.GetDeflections);        
     }
 
     public void Winner()
@@ -87,11 +132,13 @@ public class GameController : MonoBehaviour
         Debug.Log("GameController: Winner");
         gameIsRunning = false;
         blockerController.ToggleBlocker(false);
-        uiController.ToggleGameOverScreen(true, true, score);
+        uiController.ToggleGameOverScreen(true, true, scoreController.GetTotalScore);
+        saveManager.AddToSave(difficultyController.GetCurrentDifficulty.ID, scoreController.GetTotalScore, scoreController.GetDeflections);
     }
 
-    public void Restart()
+    public void ReloadGame()
     {
+        DOTween.KillAll();
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }

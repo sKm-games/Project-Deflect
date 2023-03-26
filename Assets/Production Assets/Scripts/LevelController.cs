@@ -22,11 +22,11 @@ public class LevelController : MonoBehaviour
     [SerializeField] private int totalShoots;
 
     [SerializeField] private Transform spawnPointHolder;
-    private List<SpawnpointObject> spawnPointList;
+    [SerializeField] private List<SpawnpointObject> spawnPointList;
 
     [SerializeField] private Transform targetHolder;
-    private List<TargetObject> targetsList;
-    [SerializeField] private List<TargetObject> activeTargets;
+    [SerializeField] private List<TargetObject> targetsPoolList;
+    [SerializeField] private List<TargetObject> activeTargetsPoolList;
 
     [SerializeField] private List<int> levelList;
 
@@ -38,10 +38,10 @@ public class LevelController : MonoBehaviour
 
     public void Init()
     {
-        targetsList = new List<TargetObject>(targetHolder.GetComponentsInChildren<TargetObject>());
+        targetsPoolList = new List<TargetObject>(targetHolder.GetComponentsInChildren<TargetObject>());
         spawnPointList = new List<SpawnpointObject>(spawnPointHolder.GetComponentsInChildren<SpawnpointObject>());
         
-        foreach (TargetObject t in targetsList)
+        foreach (TargetObject t in targetsPoolList)
         {
             t.Init();            
         }
@@ -102,10 +102,16 @@ public class LevelController : MonoBehaviour
         {
             yield return null;
         }
-        yield return new WaitForSeconds(difficultyController.GetCurrentDifficulty.NextLevelDelay);
 
-        LevelOver();
+        /*float delay = difficultyController.GetNextLevelDelay(level);
+        yield return new WaitForSeconds(delay);
+
+        //yield return new WaitForSeconds(difficultyController.GetCurrentDifficulty.NextLevelDelay);
+
+        LevelOver();*/
     }
+
+
 
     public void LevelOver()
     {
@@ -118,34 +124,34 @@ public class LevelController : MonoBehaviour
 
     private void SetTargets()
     {
-        activeTargets = new List<TargetObject>();
+        activeTargetsPoolList = new List<TargetObject>();
         int t = difficultyController.GetCurrentDifficulty.TargetAmount;
-        for (int i = 0; i < targetsList.Count; i++)
+        for (int i = 0; i < targetsPoolList.Count; i++)
         {
             if (i < t)
             {
-                targetsList[i].gameObject.SetActive(true);
-                activeTargets.Add(targetsList[i]);
+                targetsPoolList[i].gameObject.SetActive(true);
+                activeTargetsPoolList.Add(targetsPoolList[i]);
             }
             else
             {
-                targetsList[i].gameObject.SetActive(false);
+                targetsPoolList[i].gameObject.SetActive(false);
             }            
         }
 
-        gameController.SetLifes(activeTargets.Count);
+        gameController.SetLifes(activeTargetsPoolList.Count);
     }
 
     public Transform GetTarget()
     {
-        activeTargets.Shuffle();
+        activeTargetsPoolList.Shuffle();
 
-        if (activeTargets[0].IsDead)
+        if (activeTargetsPoolList[0].IsDead)
         {
-            activeTargets.RemoveAt(0);
+            activeTargetsPoolList.RemoveAt(0);
         }
 
-        return activeTargets[0].transform;            
+        return activeTargetsPoolList[0].transform;            
     }
 
     public SpawnpointObject GetRandomSpawn()
@@ -163,9 +169,10 @@ public class LevelController : MonoBehaviour
         return spawnPointList[0];
     }
 
-    public int GetLevelCount()
+    public void GetLevelInfo(out int l, out string d)
     {
-        return difficultyController.GetCurrentDifficulty.LevelsProjectiles.Count;
+        l = difficultyController.GetCurrentDifficulty.LevelsProjectiles.Count;
+        d = difficultyController.GetCurrentDifficulty.Name;
     }
 
 }

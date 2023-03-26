@@ -20,17 +20,15 @@ public class TargetObject : MonoBehaviour
         {
             return isDead;
         }
-    }
-    private AudioSource fireEffect;
+    }    
     private BoxCollider2D targetCollider;
-
+    private bool doOnce;
 
     private void Awake()
     {
         spriteRenderer = this.GetComponent<SpriteRenderer>();
         lights = new List<UnityEngine.Rendering.Universal.Light2D>(this.transform.GetComponentsInChildren<UnityEngine.Rendering.Universal.Light2D>());
-
-        fireEffect = GetComponent<AudioSource>();
+     
         targetCollider = GetComponent<BoxCollider2D>();
 
 
@@ -50,9 +48,10 @@ public class TargetObject : MonoBehaviour
 
     public void TakeDamage()
     {
-        if (!fireEffect.isPlaying)
+        if (!doOnce)
         {
-            fireEffect.Play();
+            gameController.GetSoundController.PlaySFX("fire");
+            doOnce = true;
         }
         if (health <= 0)
         {
@@ -68,7 +67,7 @@ public class TargetObject : MonoBehaviour
 
         if (health <= 0)
         {
-            if (DebugController.infiniteLife)
+            if (DebugSystem.InfinitLife)
             {
                 return;
             }

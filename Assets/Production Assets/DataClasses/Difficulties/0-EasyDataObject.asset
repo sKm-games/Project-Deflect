@@ -17,15 +17,15 @@ MonoBehaviour:
   BackgroundSprite: {fileID: 21300000, guid: 1b730abb058d1c0409754bba9d266caf, type: 3}
   GroundSprite: {fileID: 21300000, guid: 66e97fa1f8e283e44b9c0b29e4a21607, type: 3}
   MoonSprite: {fileID: 21300000, guid: 66e97fa1f8e283e44b9c0b29e4a21607, type: 3}
-  AimTime: 0.75
+  AimTime: 0.5
   ShotTime: 0.5
-  NextShotDelay: 0.75
-  NextLevelDelay: 4
+  NextShotDelay: 0.5
+  NextLevelDelay: 1
   AimLaserSize: 0.05
   AimLaserColor: {r: 1, g: 0, b: 0, a: 1}
   ShotLaserSize: 0.075
   ShotLaserColor: {r: 0.8289864, g: 1, b: 0, a: 1}
-  TargetAmount: 4
+  TargetAmount: 2
   TargetPrefab: {fileID: 4595119058587561198, guid: 4325310eb703ae2498c85b3b62465bc4,
     type: 3}
   BlockerScale: {x: 1.5, y: 0.25}

@@ -20,7 +20,7 @@ MonoBehaviour:
   AimTime: 0.5
   ShotTime: 0.25
   NextShotDelay: 0.5
-  NextLevelDelay: 3
+  NextLevelDelay: 1
   AimLaserSize: 0.05
   AimLaserColor: {r: 1, g: 0, b: 0, a: 1}
   ShotLaserSize: 0.075

@@ -4,30 +4,30 @@ using UnityEngine;
 
 public class ProjectileObject : MonoBehaviour
 {
-    [SerializeField] private GameController gameController;
-    
-    [SerializeField] private int score;
+    [SerializeField] private GameController gameController;      
     [SerializeField] private int lifeTime;
     
     [SerializeField] private ParticleSystem explosion;
     
     private CameraController cameraController;
-    private AudioSource blockerHitEffect;
     private Rigidbody2D rb;
+    private CircleCollider2D circleCol;
+    private bool removeOnce;    
 
-    private void Start()
+    private void Awake()
     {
-        cameraController = Camera.main.transform.GetComponent<CameraController>();
-        blockerHitEffect = this.GetComponent<AudioSource>();
+        cameraController = Camera.main.transform.GetComponent<CameraController>();                 
         rb = this.GetComponent<Rigidbody2D>();
+        circleCol = this.GetComponent<CircleCollider2D>();
     }
 
     public void Launch(Transform sp, float speed)
-    {
+    {        
         this.gameObject.SetActive(true);
-        rb.transform.position = sp.transform.position;        
+        rb.transform.position = sp.transform.position;
         rb.velocity = sp.transform.up * speed;
-
+        removeOnce = true;
+        circleCol.enabled = true;
         StartCoroutine(IELifeTime());
     }
 
@@ -35,41 +35,52 @@ public class ProjectileObject : MonoBehaviour
     {
         if (col.transform.tag == "Player")
         {
-            gameController.UpdateScore(-score);
+            gameController.GetScoreController.UpdateScore(false);
             TargetObject b = col.transform.GetComponent<TargetObject>();
             b.TakeDamage();
-            this.gameObject.SetActive(false);
+            RemoveProjectile();
             Explosion();
         }
         else if (col.transform.tag == "Blocker")
         {
-            gameController.UpdateScore(score);
-            blockerHitEffect.Play();
-            //this.gameObject.SetActive(false);
+            gameController.GetScoreController.UpdateScore(true);
+            gameController.GetSoundController.PlaySFX("deflect");         
         }
         else if (col.transform.tag == "Finish")
         {
-            this.gameObject.SetActive(false);
+            RemoveProjectile();
             Explosion();
         }
         else if (col.transform.tag == "Walls")
         {
-            this.gameObject.SetActive(false);
+            RemoveProjectile();
+        }        
+    }
+
+    private void RemoveProjectile()
+    {
+        this.gameObject.SetActive(false);
+        if (!this.gameObject.activeSelf && removeOnce)
+        {
+            circleCol.enabled = false;
+            gameController.GetProjectilesController.UpdateActiveProjectiles();
+            this.transform.position = new Vector3(-50, 0, 0);
+            removeOnce = false;
         }
     }
 
     private void Explosion()
     {
         cameraController.StartShake();
-        ParticleSystem p = Instantiate(explosion);
-        p.transform.position = this.transform.position;
-        p.gameObject.SetActive(true);
+        EffectObject e = gameController.GetProjectilesController.GetEffectObject();
+        e.transform.position = this.transform.position;
+        e.gameObject.SetActive(true);
+        e.DoEffect(gameController.GetSoundController);
     }
 
     IEnumerator IELifeTime()
     {
         yield return new WaitForSeconds(lifeTime);
-
-        this.gameObject.SetActive(false);
+        RemoveProjectile();
     }
 }

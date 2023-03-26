@@ -17,5 +17,10 @@ public class DifficultyController : MonoBehaviour
     public void SetDifficutly(int i)
     {
         currentDifficulty = difficulties[i];
-    }    
+    }
+
+    public float GetNextLevelDelay(int l)
+    {
+        return currentDifficulty.NextLevelDelay * currentDifficulty.LevelsProjectiles[l];
+    }
 }

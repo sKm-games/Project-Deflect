@@ -19,7 +19,7 @@ public class BlockerController : MonoBehaviour
 
     [SerializeField] private SpriteRenderer blockerObject;
     
-    private void Update()
+    private void FixedUpdate()
     {
         if (allowMove)
         {
