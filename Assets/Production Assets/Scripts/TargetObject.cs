@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 public class TargetObject : MonoBehaviour
 {
@@ -13,7 +14,8 @@ public class TargetObject : MonoBehaviour
     private int fireIndex;
 
     [SerializeField] int health;
-    bool isDead;
+    private int activeHealth;
+    private bool isDead;
     public bool IsDead
     {
         get
@@ -27,8 +29,7 @@ public class TargetObject : MonoBehaviour
     private void Awake()
     {
         spriteRenderer = this.GetComponent<SpriteRenderer>();
-        lights = new List<UnityEngine.Rendering.Universal.Light2D>(this.transform.GetComponentsInChildren<UnityEngine.Rendering.Universal.Light2D>());
-     
+        lights = new List<Light2D>(this.transform.GetComponentsInChildren<Light2D>());     
         targetCollider = GetComponent<BoxCollider2D>();
 
 
@@ -44,6 +45,7 @@ public class TargetObject : MonoBehaviour
         }
 
         fireIndex = fireParticles.Count;
+        activeHealth = health;
     }
 
     public void TakeDamage()
@@ -53,21 +55,21 @@ public class TargetObject : MonoBehaviour
             gameController.GetSoundController.PlaySFX("fire");
             doOnce = true;
         }
-        if (health <= 0)
+        if (activeHealth <= 0)
         {
             return;
         }
 
-        health--;
+        activeHealth--;
 
         fireIndex--;
         fireParticles[fireIndex].gameObject.SetActive(true);
         fireIndex--;
         fireParticles[fireIndex].gameObject.SetActive(true);
 
-        if (health <= 0)
+        if (activeHealth <= 0)
         {
-            if (DebugSystem.InfinitLife)
+            if (DebugSystem.InfinitLifeStatic)
             {
                 return;
             }
@@ -87,6 +89,8 @@ public class TargetObject : MonoBehaviour
         lights[4].gameObject.SetActive(false);
         lights[5].gameObject.SetActive(false);
 
+        fireParticles[0].gameObject.SetActive(true);
+        fireParticles[1].gameObject.SetActive(true);
         fireParticles[2].gameObject.SetActive(false);
         fireParticles[3].gameObject.SetActive(false);
         fireParticles[4].gameObject.SetActive(false);
@@ -96,5 +100,28 @@ public class TargetObject : MonoBehaviour
 
         gameController.UpdateLifes(-1);
         spriteRenderer.sprite = buildingSprites[1];
+    }
+
+    public void ResetTagets()
+    {
+        foreach (ParticleSystem p in fireParticles)
+        {
+            p.gameObject.SetActive(false);
+        }
+
+        fireIndex = fireParticles.Count;
+        activeHealth = health;
+
+        foreach (Light2D l in lights)
+        {
+            l.gameObject.SetActive(true);
+        }
+
+        spriteRenderer.sprite = buildingSprites[0];
+
+        gameController.GetSoundController.StopLoopSFX("fire");
+
+        doOnce = false;
+        
     }
 }

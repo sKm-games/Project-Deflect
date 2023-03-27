@@ -86,6 +86,14 @@ public class UIController : MonoBehaviour
         gameController.GetSaveManager.AddToSave("", 0, 0);
     }
 
+    public void GameOverToStartScreen()
+    {
+        levelController.ResetTargets();
+        ToggleGameOverScreen(false, false, 0);
+        gameplayScreen.SetActive(false);
+        startScreen.SetActive(true);
+    }
+
     public void UpdateCountdownText(int a, bool b = true)
     {
         gameplayCountText.gameObject.SetActive(b);
@@ -99,10 +107,11 @@ public class UIController : MonoBehaviour
         gameplayScoreText.text = $"Score: {s}";
     }
 
-    public void UpdateLevelText(int l)
+    public void UpdateLevelText(int l, bool e)
     {        
-        levelController.GetLevelInfo(out int totalLevels, out string difficulty);        
-        gameplayLevelText.text = $"{difficulty}: {(l+1).ToString("00")}/{totalLevels}";
+        levelController.GetLevelInfo(out int totalLevels, out string difficulty);
+        string s = e ? $"{difficulty}: {(l + 1).ToString("00")}" : $"{difficulty}: {(l + 1).ToString("00")}/{totalLevels}";        
+        gameplayLevelText.text = s;
     }
 
     public void ToggleGameOverScreen(bool b, bool w, int s)
@@ -112,8 +121,6 @@ public class UIController : MonoBehaviour
             gameOverTitleText.text = w ? "Winner!" : "Game Over!";
             gameOverText.text = $"Score: \n{s}";            
         }
-
-        gameplayScreen.SetActive(!b);
         gameOverScreen.SetActive(b);
     }
 
@@ -142,7 +149,5 @@ public class UIController : MonoBehaviour
     public void ToggleLoadingScreen(bool b)
     {
         loadingScreenController.ToggleLoadingScreen(b);
-    }
-
-    
+    }    
 }

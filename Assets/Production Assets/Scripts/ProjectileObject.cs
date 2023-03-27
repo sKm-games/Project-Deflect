@@ -38,8 +38,8 @@ public class ProjectileObject : MonoBehaviour
             gameController.GetScoreController.UpdateScore(false);
             TargetObject b = col.transform.GetComponent<TargetObject>();
             b.TakeDamage();
-            RemoveProjectile();
             Explosion();
+            RemoveProjectile();            
         }
         else if (col.transform.tag == "Blocker")
         {

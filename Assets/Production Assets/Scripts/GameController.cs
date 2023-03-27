@@ -68,6 +68,7 @@ public class GameController : MonoBehaviour
     }
 
     [SerializeField] private int lifes;
+    private int activeLifes;
 
     private void Awake()
     {
@@ -92,7 +93,7 @@ public class GameController : MonoBehaviour
             levelController.SetupLevel();
             gameIsRunning = true;            
             blockerController.Init(difficultyController.GetCurrentDifficulty);
-            uiController.UpdateLevelText(0);
+            uiController.UpdateLevelText(0, difficultyController.GetCurrentDifficulty.endLess);
             uiController.UpdateScoreText(0);
             blockerController.ToggleBlocker(true);
         }
@@ -101,18 +102,19 @@ public class GameController : MonoBehaviour
     public void SetLifes(int l)
     {
         lifes = l;
+        activeLifes = l;
     }
 
     public void UpdateLifes(int a)
     {
-        if (DebugSystem.InfinitLife)
+        if (DebugSystem.InfinitLifeStatic)
         {
             return;
         }
 
-        lifes += a;
+        activeLifes += a;
 
-        if (lifes <= 0)
+        if (activeLifes <= 0)
         {            
             GameIsOver();
         }

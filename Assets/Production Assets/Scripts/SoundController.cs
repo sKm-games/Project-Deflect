@@ -34,7 +34,6 @@ public class SoundController : MonoBehaviour
     private AudioSource musicAudiosource;
 
     [SerializeField] private float fadeSpeed;
-    
 
     private void Awake()
     {
@@ -52,8 +51,12 @@ public class SoundController : MonoBehaviour
             Debug.LogWarning($"SoundController: PlaySFX: soundData not found for sound {id}");
         }
 
-        float p = Random.Range(s.pitchRange.x, s.pitchRange.y);
+        if (CheckIfLooping(s))
+        {
+            return;
+        }
 
+        float p = Random.Range(s.pitchRange.x, s.pitchRange.y);
         AudioSource a = GetSFXSource();
 
         a.volume = sfxStatus ? s.maxVolume : 0;
@@ -61,6 +64,13 @@ public class SoundController : MonoBehaviour
         a.pitch = p;
         a.clip = s.Clip;
         a.Play();
+    }
+
+    private bool CheckIfLooping(SoundDataClass s)
+    {        
+        AudioSource a = sfxAudiosources.Find((x) => x.clip == s.Clip && x.loop);
+
+        return a != null;
     }
 
     public void StopLoopSFX(string id)

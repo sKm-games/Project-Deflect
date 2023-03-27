@@ -18,15 +18,9 @@ public class DebugSystem : MonoBehaviour
     [SerializeField] private EventSystem eventSystem;
     [SerializeField] private GraphicRaycaster graphicRaycaster;
 
-    [SerializeField] private static bool infinitLife;
-    
-    public static bool InfinitLife
-    {
-        get
-        {
-            return infinitLife;
-        }
-    }
+    [SerializeField] private bool infinitLife;
+
+    public static bool InfinitLifeStatic;
 
     [SerializeField] private bool autoOn;
     private static bool autoOnStatic;
@@ -42,6 +36,7 @@ public class DebugSystem : MonoBehaviour
         Application.logMessageReceived += LogCaughtException;        
         debugText = debugUI.GetChild(0).GetComponent<TextMeshProUGUI>();
         autoOnStatic = autoOn;
+        InfinitLifeStatic = infinitLife;
 
 
 #if UNITY_ANDROID && !UNITY_EDITOR
@@ -158,5 +153,10 @@ public class DebugSystem : MonoBehaviour
             UpdateDebugText(s);
         }
         
+    }
+
+    private void OnValidate()
+    {
+        InfinitLifeStatic = infinitLife;
     }
 }

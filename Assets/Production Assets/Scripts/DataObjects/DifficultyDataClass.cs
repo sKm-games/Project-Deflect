@@ -38,6 +38,7 @@ public class DifficultyDataClass : ScriptableObject
     public float ProjectileSpeed; //How fast the projectiles will be launced
 
     [Header("Levels Info")]
+    public bool endLess;
     public List<int> LevelsProjectiles; //List of the projectiles per level
 
     [Header("Audio Info")]

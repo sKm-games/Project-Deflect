@@ -61,12 +61,12 @@ public class ProjectileController : MonoBehaviour
         float offset = Random.Range(-aimOffset, aimOffset);
         float x = target.position.x + offset;
 
-        x += sp.transform.position.x < 0 ? 2 : -2;
+        //x += sp.transform.position.x < 0 ? 2 : -2;
 
         offset = Random.Range(-aimOffset, aimOffset);
         float y = target.position.y + offset;
 
-        y += sp.transform.position.y < 0 ? 2 : -2;
+        //y += sp.transform.position.y < 0 ? 2 : -2;
 
         //get target pos
         Vector3 targetPos = new Vector3(x, y, 0);

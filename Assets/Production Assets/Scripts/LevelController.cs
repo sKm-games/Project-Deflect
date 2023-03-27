@@ -10,14 +10,8 @@ public class LevelController : MonoBehaviour
     private ProjectileController projectileController;
 
     [SerializeField] private int startTimer;
-    [SerializeField] private int level;
-    public int GetLevel
-    {
-        get
-        {
-            return level;
-        }
-    }
+    [SerializeField] private int levelRef; //used to as index for levelList    
+    [SerializeField] private int levelCount; //used to track level for ui, mostly for endless mode
     
     [SerializeField] private int totalShoots;
 
@@ -50,12 +44,11 @@ public class LevelController : MonoBehaviour
     public void SetupLevel()
     {
         totalShoots = 0;
-        level = 0;
+        levelRef = 0;
+        levelCount = 0;
         levelList = new List<int>(difficultyController.GetCurrentDifficulty.LevelsProjectiles);
         SetTargets();        
         StartCoroutine(IECountDown());
-        
-        //StartLevel();
     }
 
     IEnumerator IECountDown()
@@ -74,15 +67,23 @@ public class LevelController : MonoBehaviour
 
     public void StartLevel()
     {       
-        if (level >= levelList.Count)
+        if (levelRef >= levelList.Count)
         {
-            gameController.Winner();
-            return;
+            if (difficultyController.GetCurrentDifficulty.endLess) //reset level count and shuffle list for endless
+            {
+                levelList.Shuffle();
+                levelRef = 0;
+            }
+            else
+            {
+                gameController.Winner();
+                return;
+            }            
         }
 
-        uiController.UpdateLevelText(level);
+        uiController.UpdateLevelText(levelCount, difficultyController.GetCurrentDifficulty.endLess);
 
-        int amount = levelList[level];
+        int amount = levelList[levelRef];
         StartCoroutine(IEProgressLevel(amount));
     }    
 
@@ -95,29 +96,41 @@ public class LevelController : MonoBehaviour
             projectileController.DoLaunchProjectile(sp);
             totalShoots++;
 
+
+
             yield return new WaitForSeconds(difficultyController.GetCurrentDifficulty.NextShotDelay);
         }
-
+        
+        while (!gameController.GameIsRunning)
+        {
+            yield return null;
+        }
+        
         while (totalShoots < a)
         {
             yield return null;
         }
 
-        /*float delay = difficultyController.GetNextLevelDelay(level);
-        yield return new WaitForSeconds(delay);
+        //level over when all projectiles is used up for a level, see "UpdateActiveProjectiles" in "ProjectileController"
 
-        //yield return new WaitForSeconds(difficultyController.GetCurrentDifficulty.NextLevelDelay);
+        //fixed delay
+        /*yield return new WaitForSeconds(difficultyController.GetCurrentDifficulty.NextLevelDelay);
+         LevelOver();
+        */
+
+        //delay based on projectiles
+        /*float delay = difficultyController.GetNextLevelDelay(level);
+        yield return new WaitForSeconds(delay);        
 
         LevelOver();*/
     }
-
-
 
     public void LevelOver()
     {
         if (gameController.GameIsRunning)
         {
-            level++;            
+            levelRef++;
+            levelCount++;
             StartLevel();
         }
     }
@@ -173,6 +186,14 @@ public class LevelController : MonoBehaviour
     {
         l = difficultyController.GetCurrentDifficulty.LevelsProjectiles.Count;
         d = difficultyController.GetCurrentDifficulty.Name;
+    }
+
+    public void ResetTargets()
+    {
+        foreach (TargetObject t in targetsPoolList)
+        {
+            t.ResetTagets();
+        }        
     }
 
 }
