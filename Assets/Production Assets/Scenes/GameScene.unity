@@ -301,7 +301,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 18
+  m_RootOrder: 19
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &77069887
 PrefabInstance:
@@ -413,7 +413,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0, y: 261}
+  m_AnchoredPosition: {x: 0, y: 288}
   m_SizeDelta: {x: 1498, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &90481115
@@ -1161,7 +1161,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameController: {fileID: 147243875}
   uiController: {fileID: 1734950625}
-  startTimer: 5
+  startTimer: 3
   levelRef: 0
   levelCount: 0
   totalShoots: 0
@@ -2540,7 +2540,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0, y: -1000}
+  m_AnchoredPosition: {x: 0, y: -801}
   m_SizeDelta: {x: 500, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &420318945
@@ -3399,7 +3399,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 16
+  m_RootOrder: 17
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &503966820
 GameObject:
@@ -3834,7 +3834,9 @@ LineRenderer:
   m_SortingLayerID: 1135456837
   m_SortingLayer: 2
   m_SortingOrder: 3
-  m_Positions: []
+  m_Positions:
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 0.05
@@ -4264,7 +4266,9 @@ LineRenderer:
   m_SortingLayerID: 1135456837
   m_SortingLayer: 2
   m_SortingOrder: 3
-  m_Positions: []
+  m_Positions:
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 0.05
@@ -5210,7 +5214,9 @@ LineRenderer:
   m_SortingLayerID: 1135456837
   m_SortingLayer: 2
   m_SortingOrder: 3
-  m_Positions: []
+  m_Positions:
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 0.05
@@ -5406,7 +5412,9 @@ LineRenderer:
   m_SortingLayerID: 1135456837
   m_SortingLayer: 2
   m_SortingOrder: 3
-  m_Positions: []
+  m_Positions:
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 0.05
@@ -5713,7 +5721,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &752643912
 GameObject:
@@ -6487,7 +6495,9 @@ LineRenderer:
   m_SortingLayerID: 1135456837
   m_SortingLayer: 2
   m_SortingOrder: 3
-  m_Positions: []
+  m_Positions:
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 0.05
@@ -7979,7 +7989,7 @@ Transform:
   - {fileID: 1266848197}
   - {fileID: 77069888}
   m_Father: {fileID: 0}
-  m_RootOrder: 15
+  m_RootOrder: 16
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1064469093
 GameObject:
@@ -8407,7 +8417,7 @@ Transform:
   - {fileID: 1413854128}
   - {fileID: 517460718}
   m_Father: {fileID: 0}
-  m_RootOrder: 13
+  m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1087481674
 GameObject:
@@ -8736,7 +8746,7 @@ Transform:
   - {fileID: 2017300355}
   - {fileID: 1284223765}
   m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1125510991
 PrefabInstance:
@@ -9068,7 +9078,9 @@ LineRenderer:
   m_SortingLayerID: 1135456837
   m_SortingLayer: 2
   m_SortingOrder: 3
-  m_Positions: []
+  m_Positions:
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 0.05
@@ -9242,7 +9254,7 @@ Transform:
   m_Children:
   - {fileID: 296394}
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1171835145
 GameObject:
@@ -9355,7 +9367,7 @@ Transform:
   - {fileID: 637273114}
   - {fileID: 2124763250}
   m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1172292588
 MonoBehaviour:
@@ -10192,7 +10204,9 @@ LineRenderer:
   m_SortingLayerID: 1135456837
   m_SortingLayer: 2
   m_SortingOrder: 3
-  m_Positions: []
+  m_Positions:
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 0.05
@@ -10622,7 +10636,9 @@ LineRenderer:
   m_SortingLayerID: 1135456837
   m_SortingLayer: 2
   m_SortingOrder: 3
-  m_Positions: []
+  m_Positions:
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 0.05
@@ -10778,8 +10794,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0, y: 127}
-  m_SizeDelta: {x: 1440, y: 200}
+  m_AnchoredPosition: {x: 0, y: 130.7}
+  m_SizeDelta: {x: 1440, y: 259.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1326830879
 MonoBehaviour:
@@ -10803,7 +10819,7 @@ MonoBehaviour:
       m_Calls: []
   m_Sprite: {fileID: 21300000, guid: c11096358b6dbe045bc98b701449922f, type: 3}
   m_Type: 0
-  m_PreserveAspect: 1
+  m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
@@ -11122,7 +11138,9 @@ LineRenderer:
   m_SortingLayerID: 1135456837
   m_SortingLayer: 2
   m_SortingOrder: 3
-  m_Positions: []
+  m_Positions:
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 0.05
@@ -11453,7 +11471,9 @@ LineRenderer:
   m_SortingLayerID: 1135456837
   m_SortingLayer: 2
   m_SortingOrder: 3
-  m_Positions: []
+  m_Positions:
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 0.05
@@ -11878,7 +11898,9 @@ LineRenderer:
   m_SortingLayerID: 1135456837
   m_SortingLayer: 2
   m_SortingOrder: 3
-  m_Positions: []
+  m_Positions:
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 0.05
@@ -12074,7 +12096,9 @@ LineRenderer:
   m_SortingLayerID: 1135456837
   m_SortingLayer: 2
   m_SortingOrder: 3
-  m_Positions: []
+  m_Positions:
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 0.05
@@ -12541,7 +12565,9 @@ LineRenderer:
   m_SortingLayerID: 1135456837
   m_SortingLayer: 2
   m_SortingOrder: 3
-  m_Positions: []
+  m_Positions:
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 0.05
@@ -12850,7 +12876,7 @@ Transform:
   - {fileID: 375147746}
   - {fileID: 468066020}
   m_Father: {fileID: 0}
-  m_RootOrder: 12
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1571571419
 GameObject:
@@ -12889,7 +12915,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0, y: -1000}
+  m_AnchoredPosition: {x: 0, y: -801.00006}
   m_SizeDelta: {x: 500, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1571571421
@@ -13593,7 +13619,9 @@ LineRenderer:
   m_SortingLayerID: 1135456837
   m_SortingLayer: 2
   m_SortingOrder: 3
-  m_Positions: []
+  m_Positions:
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 0.05
@@ -14151,7 +14179,9 @@ LineRenderer:
   m_SortingLayerID: 1135456837
   m_SortingLayer: 2
   m_SortingOrder: 3
-  m_Positions: []
+  m_Positions:
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 0.05
@@ -14656,7 +14686,7 @@ RectTransform:
   - {fileID: 2079032961}
   - {fileID: 90481114}
   m_Father: {fileID: 0}
-  m_RootOrder: 17
+  m_RootOrder: 18
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -14973,7 +15003,7 @@ Transform:
   - {fileID: 1405451353}
   - {fileID: 1520199421}
   m_Father: {fileID: 0}
-  m_RootOrder: 14
+  m_RootOrder: 15
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1803248191
 GameObject:
@@ -15102,7 +15132,9 @@ LineRenderer:
   m_SortingLayerID: 1135456837
   m_SortingLayer: 2
   m_SortingOrder: 3
-  m_Positions: []
+  m_Positions:
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 0.05
@@ -16595,6 +16627,89 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1930855173}
   m_CullTransparentMesh: 1
+--- !u!1 &1949505467
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1949505471}
+  - component: {fileID: 1949505470}
+  - component: {fileID: 1949505469}
+  - component: {fileID: 1949505468}
+  m_Layer: 0
+  m_Name: ADController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1949505468
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1949505467}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6bea9a9fc80e924d9dc864d25c762d3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uiController: {fileID: 1734950625}
+  gameController: {fileID: 147243875}
+  saveMananger: {fileID: 1880192690}
+  myPlacementId: Rewarded_Android
+  adID: 0
+--- !u!114 &1949505469
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1949505467}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 523b98709220dd0429878b472219b2b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  myPlacementId: Banner_Android
+  placeHolderAD: {fileID: 1534916795}
+  usePlaceholder: 1
+--- !u!114 &1949505470
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1949505467}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1b96ee5c80c189459d02451ee8d18d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameID: 5223779
+  testMode: 0
+  bannerAD: {fileID: 1949505469}
+  bannerPosition: 4
+  videoAD: {fileID: 1949505468}
+--- !u!4 &1949505471
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1949505467}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -2.9583883, y: 1.4830765, z: -118.30413}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1949825061
 GameObject:
   m_ObjectHideFlags: 0
@@ -17159,7 +17274,9 @@ LineRenderer:
   m_SortingLayerID: 1135456837
   m_SortingLayer: 2
   m_SortingOrder: 3
-  m_Positions: []
+  m_Positions:
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 0.05
