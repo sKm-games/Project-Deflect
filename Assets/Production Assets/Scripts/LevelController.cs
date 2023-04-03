@@ -41,12 +41,15 @@ public class LevelController : MonoBehaviour
         }
     }
 
-    public void SetupLevel()
+    public void SetupLevel(bool newRun)
     {
-        totalShoots = 0;
-        levelRef = 0;
-        levelCount = 0;
-        levelList = new List<int>(difficultyController.GetCurrentDifficulty.LevelsProjectiles);
+        if (newRun)
+        {
+            totalShoots = 0;
+            levelRef = 0;
+            levelCount = 0;
+            levelList = new List<int>(difficultyController.GetCurrentDifficulty.LevelsProjectiles);
+        }        
         SetTargets();        
         StartCoroutine(IECountDown());
     }
@@ -96,8 +99,6 @@ public class LevelController : MonoBehaviour
             projectileController.DoLaunchProjectile(sp);
             totalShoots++;
 
-
-
             yield return new WaitForSeconds(difficultyController.GetCurrentDifficulty.NextShotDelay);
         }
         
@@ -145,6 +146,7 @@ public class LevelController : MonoBehaviour
             {
                 targetsPoolList[i].gameObject.SetActive(true);
                 activeTargetsPoolList.Add(targetsPoolList[i]);
+                targetsPoolList[i].ResetTagets();
             }
             else
             {
@@ -193,7 +195,9 @@ public class LevelController : MonoBehaviour
         foreach (TargetObject t in targetsPoolList)
         {
             t.ResetTagets();
-        }        
+        }
+
+        gameController.SetLifes(activeTargetsPoolList.Count);
     }
 
 }

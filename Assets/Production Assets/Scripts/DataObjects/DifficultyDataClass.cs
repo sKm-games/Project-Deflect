@@ -7,6 +7,7 @@ public class DifficultyDataClass : ScriptableObject
     [Header("Basic Info")]
     public string ID; //Unuqie id
     public string Name; //Name shown on UI, etc
+    public string LeaderboardID; //Leaderboard ID from Google Play
 
     [Header("Enviroment Info")]
     public Sprite BackgroundSprite; //Background sprite
@@ -37,7 +38,7 @@ public class DifficultyDataClass : ScriptableObject
     [Header("Projectiles Info")]
     public float ProjectileSpeed; //How fast the projectiles will be launced
 
-    [Header("Levels Info")]
+    [Header("Levels Info")]    
     public bool endLess;
     public List<int> LevelsProjectiles; //List of the projectiles per level
 

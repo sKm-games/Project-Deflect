@@ -21,8 +21,11 @@ public class SaveManager : MonoBehaviour
     public class SaveInfoClass
     {
         public int SaveVersion; //holds the SaveSystem versio, used to auto delet save files if needed
-        public int SFXMute; //holds the status of SFXmute
-        public int MusicMute; //holds the status of Musicmute
+        //public int SFXMute; //holds the status of SFXmute
+        //public int MusicMute; //holds the status of Musicmute
+        public float SFXVolume;
+        public float MusicVolume;
+        public float Sensetivity; //blocker movement sens
         public int CurrentLevel; //holds current level ref
         public int LoggedInStatus; //0 not logged in, 1 logged in        
         public string LastPlayed; //Last time player played, used to give more hints
@@ -53,14 +56,20 @@ public class SaveManager : MonoBehaviour
         }
 
         tempSave.SaveVersion = currentSaveVersion;
+        gameController.GetSoundController.GetSaveInfo(out float s, out float m);
 
         if (string.IsNullOrEmpty(diffID)) //limited save
         {
             DebugSystem.UpdateDebugText("SaveManger: LimitedSave", false, doDebug);          
             tempSave.LastPlayed = DateTime.Today.ToShortDateString();
+
             //tempSave.LoggedInStatus = googlePlayController.CheckLogin();
-            tempSave.SFXMute = gameController.GetSoundController.GetSFXStatus;
-            tempSave.MusicMute = gameController.GetSoundController.GetMusicStatus;
+            //tempSave.SFXMute = gameController.GetSoundController.GetSFXStatus;
+            //tempSave.MusicMute = gameController.GetSoundController.GetMusicStatus;
+
+            tempSave.SFXVolume = s;
+            tempSave.MusicVolume = m;
+            tempSave.Sensetivity = gameController.GetBlockerController.Sensetivity;
             SaveSystem.SaveData(tempSave);
             return;
         }
@@ -88,8 +97,11 @@ public class SaveManager : MonoBehaviour
             tempSave.DifficultySaveDataList.Add(diffInfo);            
         }
 
-        tempSave.SFXMute = gameController.GetSoundController.GetSFXStatus;
-        tempSave.MusicMute = gameController.GetSoundController.GetMusicStatus;        
+        //tempSave.SFXMute = gameController.GetSoundController.GetSFXStatus;
+        //tempSave.MusicMute = gameController.GetSoundController.GetMusicStatus;
+        
+        tempSave.SFXVolume = s;
+        tempSave.MusicVolume = m;
 
         tempSave.LastPlayed = DateTime.Today.ToShortDateString();
 
@@ -115,9 +127,12 @@ public class SaveManager : MonoBehaviour
                 gameController.ReloadGame();
                 return;
             }
-            
-            gameController.GetSoundController.SetSaveInfo(mainSaveInfo.SFXMute, mainSaveInfo.MusicMute);            
-            
+
+            //gameController.GetSoundController.SetSaveInfo(mainSaveInfo.SFXMute, mainSaveInfo.MusicMute);            
+
+            gameController.GetSoundController.SetSaveInfo(mainSaveInfo.SFXVolume, mainSaveInfo.MusicVolume);
+            gameController.GetBlockerController.SetSaveInfo(mainSaveInfo.Sensetivity);
+
             if (mainSaveInfo.LoggedInStatus == 1) //auto log in
             {                
                 //googlePlayController.LogIn();
@@ -129,7 +144,8 @@ public class SaveManager : MonoBehaviour
 #if UNITY_ANDROID
             //googlePlayController.FirstLogin();
 #endif
-            gameController.GetSoundController.SetSaveInfo(1, 1);
+            gameController.GetSoundController.SetSaveInfo(0.25f, 0.25f);
+            gameController.GetBlockerController.SetSaveInfo(1f);
             AddToSave("", 0, 0); //Make new save file with default values
         }        
         Invoke("LoadingScreenOff", 0.5f);
@@ -138,7 +154,7 @@ public class SaveManager : MonoBehaviour
     private void LoadingScreenOff()
     {
         uiController.ToggleLoadingScreen(false);
-        //soundManager.StartMusic();
+        gameController.GetSoundController.PlayMusic();
     }
 
     public int GetScoreByID(string id)

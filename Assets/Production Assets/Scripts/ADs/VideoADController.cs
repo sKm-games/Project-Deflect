@@ -13,6 +13,8 @@ public class VideoADController : MonoBehaviour, IUnityAdsLoadListener, IUnityAds
     [SerializeField] private UIController uiController;
     [SerializeField] private GameController gameController;
     [SerializeField] private SaveManager saveMananger;
+    [SerializeField] private Button gameOverVideoButton;
+
     private BannerADController bannerAD;
     
 
@@ -33,6 +35,7 @@ public class VideoADController : MonoBehaviour, IUnityAdsLoadListener, IUnityAds
         if (placementId == myPlacementId)
         {
             // Optional actions to take when the placement becomes ready(For example, enable the rewarded ads button)
+            gameOverVideoButton.interactable = true;
         }
     }
     public void OnUnityAdsDidStart(string placementId)
@@ -41,7 +44,7 @@ public class VideoADController : MonoBehaviour, IUnityAdsLoadListener, IUnityAds
     }
     public void OnUnityAdsAdLoaded(string placementId)
     {
-        Debug.Log("Video loaded");
+        Debug.Log("Video loaded");        
     }
     public void OnUnityAdsShowStart(string adUnitId)
     {
@@ -70,6 +73,7 @@ public class VideoADController : MonoBehaviour, IUnityAdsLoadListener, IUnityAds
             {
                 default:
                 case 0:
+                    ToggleAdButton(0, false);
                     break;
             }
         }
@@ -125,6 +129,7 @@ public class VideoADController : MonoBehaviour, IUnityAdsLoadListener, IUnityAds
         string s = $"VIDEO AD: Error loading Ad Unit {adUnitId}: {error.ToString()} - {message}";
         DebugSystem.UpdateDebugText(s, true);
         // Use the error details to determine whether to try to load another ad.
+        gameOverVideoButton.interactable = false;
     }
 
     public void OnUnityAdsShowFailure(string adUnitId, UnityAdsShowError error, string message)
@@ -142,7 +147,7 @@ public class VideoADController : MonoBehaviour, IUnityAdsLoadListener, IUnityAds
         {
             default:
             case 0:
-
+                ADButton = gameOverVideoButton.gameObject;
                 break;
             case 1:               
                 break;
@@ -158,6 +163,7 @@ public class VideoADController : MonoBehaviour, IUnityAdsLoadListener, IUnityAds
         {
             ADButton.transform.DOComplete();
             ADButton.transform.DOKill();
+            ADButton.transform.localScale = new Vector3(1f, 1f, 1f);
             ADButton.SetActive(false);
         }
     }
@@ -170,7 +176,7 @@ public class VideoADController : MonoBehaviour, IUnityAdsLoadListener, IUnityAds
             Debug.Log("Video AD: Invalid AD ID used: " + adID + ", not found");
                 return;
             case 0:
-                Type00VideoADDone();
+                Type00VideoADDone();                
                 break;
         }
 
@@ -185,6 +191,7 @@ public class VideoADController : MonoBehaviour, IUnityAdsLoadListener, IUnityAds
 
     IEnumerator IEType00VideoADDone()
     {
+        gameController.VideoContinue();
         yield return new WaitForSeconds(0.5f); //delay to allow video ad UI to close befor effect run, looks better
     }
 

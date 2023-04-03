@@ -55,21 +55,9 @@ public class ProjectileController : MonoBehaviour
             yield break;
         }
         activeProjectiles++;
-        //calc aim offesets        
-        Transform target = levelController.GetTarget();
-        //Debug.Log($"ProjectileController: {sp.transform.name} to {target.name}");
-        float offset = Random.Range(-aimOffset, aimOffset);
-        float x = target.position.x + offset;
-
-        //x += sp.transform.position.x < 0 ? 2 : -2;
-
-        offset = Random.Range(-aimOffset, aimOffset);
-        float y = target.position.y + offset;
-
-        //y += sp.transform.position.y < 0 ? 2 : -2;
 
         //get target pos
-        Vector3 targetPos = new Vector3(x, y, 0);
+        Vector3 targetPos = FindAimOffsett(sp);
 
         DifficultyDataClass data = difficultyController.GetCurrentDifficulty;
 
@@ -98,6 +86,26 @@ public class ProjectileController : MonoBehaviour
         gameController.GetSoundController.PlaySFX("shoot");
 
         sp.IsReady = true;
+    }
+
+    private Vector3 FindAimOffsett(SpawnpointObject sp)
+    {
+        //calc aim offesets        
+        Transform target = levelController.GetTarget();
+
+        float minOffset = sp.transform.position.x <= -3 ? 0 : -aimOffset;
+        float maxOffset = sp.transform.position.x >= 3 ? 0 : aimOffset;
+
+        //float offset = Random.Range(-aimOffset, aimOffset);
+        float offset = Random.Range(minOffset, maxOffset);
+        float x = target.position.x + offset;
+
+        //offset = Random.Range(-aimOffset, aimOffset);
+
+        offset = Random.Range(minOffset, maxOffset);
+        float y = target.position.y + offset;
+
+        return new Vector3(x, y, 0);
     }
 
     private ProjectileObject GetProjectile()

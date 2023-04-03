@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 using DG.Tweening;
 
 public class SoundController : MonoBehaviour
@@ -19,10 +20,20 @@ public class SoundController : MonoBehaviour
         }
     }
     [SerializeField] private List<AudioSource> sfxAudiosources;
-    
-    [SerializeField] private Toggle musicTogglePause;
-    [SerializeField] private Toggle musicToggleSettings;
-    [SerializeField] private float musicMax;
+
+    //[SerializeField] private Toggle musicTogglePause;
+    //[SerializeField] private Toggle musicToggleSettings;
+
+    [SerializeField] private Slider sfxSliderPause;
+    private TextMeshProUGUI sfxSliderPauseText;
+    [SerializeField] private Slider sfxSliderSettings;
+    private TextMeshProUGUI sfxSliderSettingsText;
+    [SerializeField] private Slider musicSliderPause;
+    private TextMeshProUGUI musicSliderTextPause;
+    [SerializeField] private Slider musicSliderSettings;
+    private TextMeshProUGUI musicSliderTextSettings;
+
+    //[SerializeField] private float musicMax;
     private bool musicStatus;
     public int GetMusicStatus
     {
@@ -40,6 +51,10 @@ public class SoundController : MonoBehaviour
         musicAudiosource = this.GetComponents<AudioSource>()[0];
         sfxAudiosources = new List<AudioSource>(this.GetComponentsInChildren<AudioSource>());
         sfxAudiosources.RemoveAt(0); //remove music
+        sfxSliderPauseText = sfxSliderPause.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+        sfxSliderSettingsText = sfxSliderSettings.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+        musicSliderTextPause = musicSliderPause.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+        musicSliderTextSettings = musicSliderSettings.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
     }
 
     public void PlaySFX(string id)
@@ -59,7 +74,7 @@ public class SoundController : MonoBehaviour
         float p = Random.Range(s.pitchRange.x, s.pitchRange.y);
         AudioSource a = GetSFXSource();
 
-        a.volume = sfxStatus ? s.maxVolume : 0;
+        a.volume = sfxSliderPause.value > s.maxVolume ? s.maxVolume : sfxSliderPause.value;
         a.loop = s.loop;
         a.pitch = p;
         a.clip = s.Clip;
@@ -81,18 +96,21 @@ public class SoundController : MonoBehaviour
         if (a == null)
         {
             Debug.LogWarning($"SoundController: StopLoppSFX: source not found for sound {id}");
+            return;
         }
         a.Stop();
     }
 
     public void PlayMusic()
-    {
+    {        
         musicAudiosource.Play();
-        float v = musicStatus ? musicMax : 0;
-        musicAudiosource.DOFade(v, 0.5f);
+        //float v = musicStatus ? musicMax : 0;
+
+        //musicAudiosource.DOFade(v, 0.5f);
+        musicAudiosource.DOFade(musicSliderPause.value, 0.5f);
     }    
 
-    public void ToggleSFX(Toggle t)
+    /*public void ToggleSFX(Toggle t)
     {
         sfxStatus = t.isOn;
         sfxTogglePause.SetIsOnWithoutNotify(sfxStatus);
@@ -130,46 +148,93 @@ public class SoundController : MonoBehaviour
         }
         DOTween.timeScale = 1;
         musicAudiosource.DOFade(v, fadeSpeed);        
-    }
+    }*/
 
-    public void SetSaveInfo(int s, int m)
+    public void SFXSlider(Slider s)
     {
-        Debug.Log("SetSoundSaveInfo");
-        sfxStatus = s == 1 ? true : false;
+        s.value = (float)decimal.Round((decimal)s.value, 2);
 
-        float v = 0;
         foreach (AudioSource a in sfxAudiosources)
         {
-            if (!sfxStatus)
-            {
-                a.DOFade(0, fadeSpeed);
-                continue;
-            }
-
-            SoundDataClass sc = soundEffects.Find((x) => x.Clip == a.clip);
-
-            if (sc == null)
-            {
-                continue;
-            }
-
-            a.DOFade(sc.maxVolume, fadeSpeed);
+            a.volume = s.value;
         }
 
-        sfxTogglePause.SetIsOnWithoutNotify(sfxStatus);
-        sfxToggleSettings.SetIsOnWithoutNotify(sfxStatus);
+        sfxSliderPause.SetValueWithoutNotify(s.value);
+        sfxSliderPauseText.text = $"SFX: {s.value*100}%";       
 
-        musicStatus = m == 1 ? true : false;
-        v = musicStatus ? 0f : musicMax;
-        musicAudiosource.DOFade(v, fadeSpeed);
+        sfxSliderSettings.SetValueWithoutNotify(s.value);
+        sfxSliderSettingsText.text = $"SFX: {s.value*100}%";
 
-        musicTogglePause.SetIsOnWithoutNotify(musicStatus);
-        musicToggleSettings.SetIsOnWithoutNotify(musicStatus);
-
-        if (musicStatus)
+        if (!sfxAudiosources[0].isPlaying)
         {
-            PlayMusic();
-        }
+            PlaySFX(soundEffects[0].ID);
+        }        
+    }
+
+    public void MusicSlider(Slider s)
+    {
+        s.value = (float)decimal.Round((decimal)s.value, 2);
+
+        musicAudiosource.volume = s.value;
+
+        musicSliderPause.SetValueWithoutNotify(s.value);
+        musicSliderTextPause.text = $"Music: {s.value * 100}%";
+        musicSliderSettings.SetValueWithoutNotify(s.value);
+        musicSliderTextSettings.text = $"Muisc: {s.value * 100}%";
+    }
+
+    //public void SetSaveInfo(int s, int m)
+    public void SetSaveInfo(float s, float m)
+    {
+        DebugSystem.UpdateDebugText("Set Sound Save Info");
+        #region Toggles
+        /* sfxStatus = s == 1 ? true : false;
+
+         float v = 0;
+         foreach (AudioSource a in sfxAudiosources)
+         {
+             if (!sfxStatus)
+             {
+                 a.DOFade(0, fadeSpeed);
+                 continue;
+             }
+
+             SoundDataClass sc = soundEffects.Find((x) => x.Clip == a.clip);
+
+             if (sc == null)
+             {
+                 continue;
+             }
+
+             a.DOFade(sc.maxVolume, fadeSpeed);
+         }
+
+         sfxTogglePause.SetIsOnWithoutNotify(sfxStatus);       
+         sfxToggleSettings.SetIsOnWithoutNotify(sfxStatus);
+
+         musicStatus = m == 1 ? true : false;
+         v = musicStatus ? musicMax : 0f;
+         musicAudiosource.DOFade(v, fadeSpeed);
+
+         musicTogglePause.SetIsOnWithoutNotify(musicStatus);
+         musicToggleSettings.SetIsOnWithoutNotify(musicStatus);*/
+        #endregion
+        sfxSliderPause.SetValueWithoutNotify(s);
+        sfxSliderPauseText.text = $"SFX: {s * 100}%";
+
+        sfxSliderSettings.SetValueWithoutNotify(s);
+        sfxSliderSettingsText.text = $"SFX: {s * 100}%";
+
+        musicSliderPause.SetValueWithoutNotify(m);
+        musicSliderTextPause.text = $"Music: {m * 100}%";
+        musicSliderSettings.SetValueWithoutNotify(m);
+        musicSliderTextSettings.text = $"Muisc: {m * 100}%";
+    }
+
+    public void GetSaveInfo(out float s, out float m)
+    {
+        s = sfxSliderPause.value;
+        m = musicSliderPause.value;
     }
 
     private AudioSource GetSFXSource()

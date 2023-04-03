@@ -8,6 +8,7 @@ public class UIController : MonoBehaviour
 {
     [SerializeField] private GameController gameController;
     [SerializeField] private LevelController levelController;
+    [SerializeField] private VideoADController videoADController;
     [SerializeField] private GameObject mainMenuUI;
     [SerializeField] private GameObject pauseWindow;
     [SerializeField] private LoadingScreenController loadingScreenController;
@@ -28,7 +29,7 @@ public class UIController : MonoBehaviour
     private TextMeshProUGUI gameplayCountText;
     private GameObject gameOverScreen;
     private TextMeshProUGUI gameOverTitleText;
-    private TextMeshProUGUI gameOverText;
+    private TextMeshProUGUI gameOverText;    
 
     [SerializeField] private TextMeshProUGUI versionText;
 
@@ -70,6 +71,7 @@ public class UIController : MonoBehaviour
         pauseWindow.SetActive(false);
         
         Time.timeScale = 1;
+        gameController.GameIsRunning = false;
         gameplayCountText.text = "0";
     }
 
@@ -86,12 +88,10 @@ public class UIController : MonoBehaviour
         gameController.GetSaveManager.AddToSave("", 0, 0);
     }
 
-    public void GameOverToStartScreen()
+    public void GameToStartScreen()
     {
         levelController.ResetTargets();
-        ToggleGameOverScreen(false, false, 0);
-        gameplayScreen.SetActive(false);
-        startScreen.SetActive(true);
+        DefaultLayout();
     }
 
     public void UpdateCountdownText(int a, bool b = true)
@@ -121,7 +121,10 @@ public class UIController : MonoBehaviour
             gameOverTitleText.text = w ? "Winner!" : "Game Over!";
             gameOverText.text = $"Score: \n{s}";            
         }
+
         gameOverScreen.SetActive(b);
+        pauseWindow.SetActive(false);
+        videoADController.ToggleAdButton(0, true);
     }
 
     public void TogglePauseScreen(bool b)
@@ -133,6 +136,8 @@ public class UIController : MonoBehaviour
         {
             gameController.GetSaveManager.AddToSave("", 0, 0);   
         }
+
+        Time.timeScale = b ? 0 : 1;
     }
 
     public bool CheckScreenStatus(string id)

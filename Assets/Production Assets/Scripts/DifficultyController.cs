@@ -23,4 +23,9 @@ public class DifficultyController : MonoBehaviour
     {
         return currentDifficulty.NextLevelDelay * currentDifficulty.LevelsProjectiles[l];
     }
+
+    public int GetDifficultyIndex()
+    {
+        return difficulties.FindIndex(x => x == currentDifficulty);        
+    }
 }

@@ -31,8 +31,6 @@ public class TargetObject : MonoBehaviour
         spriteRenderer = this.GetComponent<SpriteRenderer>();
         lights = new List<Light2D>(this.transform.GetComponentsInChildren<Light2D>());     
         targetCollider = GetComponent<BoxCollider2D>();
-
-
     }
 
     public void Init()
@@ -120,6 +118,10 @@ public class TargetObject : MonoBehaviour
         spriteRenderer.sprite = buildingSprites[0];
 
         gameController.GetSoundController.StopLoopSFX("fire");
+
+        targetCollider.enabled = true;
+
+        isDead = false;
 
         doOnce = false;
         

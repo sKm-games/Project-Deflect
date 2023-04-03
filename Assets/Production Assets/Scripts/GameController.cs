@@ -16,6 +16,13 @@ public class GameController : MonoBehaviour
         }
     }
     [SerializeField] private LevelController levelController;
+    public LevelController GetLevelController
+    {
+        get
+        {
+            return levelController;
+        }
+    }
     [SerializeField] private SaveManager saveManager;
     public SaveManager GetSaveManager
     {
@@ -48,7 +55,6 @@ public class GameController : MonoBehaviour
             return blockerController;
         }
     }
-
     [SerializeField] private SoundController soundController;
     public SoundController GetSoundController
     {
@@ -65,6 +71,10 @@ public class GameController : MonoBehaviour
         {
             return gameIsRunning;
         }
+        set
+        {
+            gameIsRunning = value;
+        }
     }
 
     [SerializeField] private int lifes;
@@ -75,7 +85,10 @@ public class GameController : MonoBehaviour
         projectileController = levelController.GetComponent<ProjectileController>();
         difficultyController = levelController.GetComponent<DifficultyController>();
         blockerController.ToggleBlocker(false);    
-        levelController.Init();        
+        
+        levelController.Init();
+        
+        Time.timeScale = 1;
     }
 
     private void Start()
@@ -90,13 +103,27 @@ public class GameController : MonoBehaviour
             Debug.Log("Start Game");
             scoreController.ResetScore();
             difficultyController.SetDifficutly(d);
-            levelController.SetupLevel();
+            levelController.SetupLevel(true);
             gameIsRunning = true;            
             blockerController.Init(difficultyController.GetCurrentDifficulty);
             uiController.UpdateLevelText(0, difficultyController.GetCurrentDifficulty.endLess);
             uiController.UpdateScoreText(0);
             blockerController.ToggleBlocker(true);
         }
+    }
+
+    public void VideoContinue()
+    {
+        levelController.SetupLevel(false);
+        uiController.ToggleGameOverScreen(false, false, 0);
+        blockerController.ToggleBlocker(true);
+        gameIsRunning = true;
+    }
+
+    public void RetryDifficulty()
+    {
+        StartGame(difficultyController.GetDifficultyIndex());
+        uiController.ToggleGameOverScreen(false, false, 0);
     }
 
     public void SetLifes(int l)

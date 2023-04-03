@@ -100,6 +100,13 @@ public class DebugSystem : MonoBehaviour
         UpdateDebugText("Debug UI: " + true, false, true);
     }
 
+    public void HideDebugUI()
+    {
+        active = false;
+        debugText.transform.parent.gameObject.SetActive(active);
+        UpdateDebugText("Debug UI: " + active, false, true);
+    }
+
     public static void UpdateDebugText(string s, bool f = false, bool d = true)
     {
         if (!d && !f)
@@ -129,6 +136,7 @@ public class DebugSystem : MonoBehaviour
     public void DebugToggleInfinitLevel(TextMeshProUGUI t)
     {
         infinitLife = !infinitLife;
+        InfinitLifeStatic = infinitLife;
         t.text = $"Infinite Health\n {infinitLife}";
     }
 
