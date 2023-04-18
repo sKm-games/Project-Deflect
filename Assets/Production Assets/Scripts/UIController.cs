@@ -1,17 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 using DG.Tweening;
 
+
 public class UIController : MonoBehaviour
 {
-    [SerializeField] private GameController gameController;
+    [SerializeField] private GameController gameController;    
     [SerializeField] private LevelController levelController;
+    [SerializeField] private DifficultyController difficultyController;
     [SerializeField] private VideoADController videoADController;
-    [SerializeField] private GameObject mainMenuUI;
-    [SerializeField] private GameObject pauseWindow;
-    [SerializeField] private LoadingScreenController loadingScreenController;
+    [SerializeField] private SoundController soundController;
+    [SerializeField] private GooglePlayController googlePlayController;    
+    [SerializeField] private LoadingScreenController loadingScreenController;    
     public LoadingScreenController GetLoadingScreenController
     {
         get
@@ -19,6 +22,11 @@ public class UIController : MonoBehaviour
             return loadingScreenController;
         }
     }
+    [SerializeField] private GameObject mainMenuUI;
+
+    [SerializeField] private List<Button> difficultiesModeButton;
+    [SerializeField] private List<Button> difficultiesLeaderboardButton;
+    [SerializeField] private GameObject pauseWindow;
     private GameObject startScreen;
     private GameObject modeSelectionScreen;
     private GameObject settingScreen;
@@ -29,7 +37,9 @@ public class UIController : MonoBehaviour
     private TextMeshProUGUI gameplayCountText;
     private GameObject gameOverScreen;
     private TextMeshProUGUI gameOverTitleText;
-    private TextMeshProUGUI gameOverText;    
+    private TextMeshProUGUI gameOverText;
+
+    [SerializeField] private GameObject googlePlayErrorScreen;
 
     [SerializeField] private TextMeshProUGUI versionText;
 
@@ -58,6 +68,7 @@ public class UIController : MonoBehaviour
     private void Start()
     {
         DefaultLayout();
+        SetupDiffictiesButtons();
     }
 
     private void DefaultLayout()
@@ -69,16 +80,58 @@ public class UIController : MonoBehaviour
         gameplayScreen.SetActive(false);
         gameOverScreen.SetActive(false);
         pauseWindow.SetActive(false);
+
+        googlePlayErrorScreen.SetActive(false);
         
         Time.timeScale = 1;
         gameController.GameIsRunning = false;
         gameplayCountText.text = "0";
     }
 
+    private void SetupDiffictiesButtons()
+    {
+        for (int i = 0; i < difficultiesModeButton.Count; i++)
+        {
+            difficultiesModeButton[i].onClick.RemoveAllListeners();
+            difficultiesModeButton[i].onClick.AddListener(() => gameController.StartGame(i));
+            difficultiesModeButton[i].onClick.AddListener(() => ModesToGame());
+        }
+
+        for (int i = 0; i < difficultiesLeaderboardButton.Count; i++)
+        {
+            difficultiesLeaderboardButton[i].onClick.RemoveAllListeners();
+            int index = i;
+            difficultiesLeaderboardButton[i].onClick.AddListener(() => ShowLeaderboard(index));
+        }
+    }
+
+    public void ShowLeaderboard(int i)
+    {
+        string s = difficultyController.GetDifficultyLeaderboardRef(i);
+        googlePlayController.GetLeaderbordController.ShowSpecificLeaderboard(s);
+    }
+
+    public void UpdateLeadeboardButtons()
+    {
+        foreach (Button b in difficultiesLeaderboardButton)
+        {
+            b.interactable = GooglePlayController.CheckLogin() == 1 ? true : false;
+        }
+    }
+
     public void ModesToGame()
     {
         modeSelectionScreen.SetActive(false);
         gameplayScreen.SetActive(true);
+        soundController.PlaySFX("button");
+    }
+
+    public void StartScreenToMode()
+    {
+        startScreen.SetActive(false);
+        UpdateLeadeboardButtons();
+        soundController.PlaySFX("button");
+        modeSelectionScreen.SetActive(true);
     }
 
     public void SettingToStartScreen()
@@ -86,18 +139,22 @@ public class UIController : MonoBehaviour
         settingScreen.SetActive(false);
         startScreen.SetActive(true);
         gameController.GetSaveManager.AddToSave("", 0, 0);
+        soundController.PlaySFX("button");
     }
 
     public void GameToStartScreen()
     {
         levelController.ResetTargets();
+        levelController.StopProgress();        
+        gameController.GetBlockerController.ToggleBlocker(false);
+        gameController.GameIsRunning = false;
         DefaultLayout();
     }
 
     public void UpdateCountdownText(int a, bool b = true)
     {
         gameplayCountText.gameObject.SetActive(b);
-        string s = a > 0 ? a.ToString() : "GO";
+        string s = a > 0 ? a.ToString() : "Incoming!";
         gameplayCountText.text = s;
         gameplayCountText.transform.DOPunchScale(new Vector3(0.25f, 0.25f, 0f), 0.5f, 0 , 0);
     }
@@ -121,7 +178,7 @@ public class UIController : MonoBehaviour
             gameOverTitleText.text = w ? "Winner!" : "Game Over!";
             gameOverText.text = $"Score: \n{s}";            
         }
-
+        videoADController.LoadVideoAD();
         gameOverScreen.SetActive(b);
         pauseWindow.SetActive(false);
         videoADController.ToggleAdButton(0, true);
@@ -138,6 +195,7 @@ public class UIController : MonoBehaviour
         }
 
         Time.timeScale = b ? 0 : 1;
+        soundController.PlaySFX("button");
     }
 
     public bool CheckScreenStatus(string id)
@@ -154,5 +212,14 @@ public class UIController : MonoBehaviour
     public void ToggleLoadingScreen(bool b)
     {
         loadingScreenController.ToggleLoadingScreen(b);
-    }    
+    }
+
+    public void ToggleGooglePlayErrorScreen(bool b)
+    {
+        googlePlayErrorScreen.SetActive(b);
+        if (!b)
+        {
+            soundController.PlaySFX("button");
+        }
+    }
 }

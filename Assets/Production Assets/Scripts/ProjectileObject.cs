@@ -57,7 +57,7 @@ public class ProjectileObject : MonoBehaviour
         }        
     }
 
-    private void RemoveProjectile()
+    public void RemoveProjectile()
     {
         this.gameObject.SetActive(false);
         if (!this.gameObject.activeSelf && removeOnce)

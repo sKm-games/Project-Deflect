@@ -6,6 +6,7 @@ using UnityEngine.Rendering.Universal;
 public class TargetObject : MonoBehaviour
 {
     [SerializeField] private GameController gameController;
+    [SerializeField] private GooglePlayController googlePlayController;
 
     [SerializeField] private List<Sprite> buildingSprites;
     private SpriteRenderer spriteRenderer;    
@@ -98,6 +99,9 @@ public class TargetObject : MonoBehaviour
 
         gameController.UpdateLifes(-1);
         spriteRenderer.sprite = buildingSprites[1];
+
+        googlePlayController.GetAchievementController.CheckHealthAchievements();
+        
     }
 
     public void ResetTagets()

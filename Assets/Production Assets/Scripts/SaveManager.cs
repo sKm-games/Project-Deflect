@@ -7,6 +7,7 @@ public class SaveManager : MonoBehaviour
 {    
     [SerializeField] private GameController gameController;
     [SerializeField] private UIController uiController;
+    [SerializeField] private GooglePlayController googlePlayController;
     
     [SerializeField] private int currentSaveVersion;
     [Serializable]
@@ -63,9 +64,7 @@ public class SaveManager : MonoBehaviour
             DebugSystem.UpdateDebugText("SaveManger: LimitedSave", false, doDebug);          
             tempSave.LastPlayed = DateTime.Today.ToShortDateString();
 
-            //tempSave.LoggedInStatus = googlePlayController.CheckLogin();
-            //tempSave.SFXMute = gameController.GetSoundController.GetSFXStatus;
-            //tempSave.MusicMute = gameController.GetSoundController.GetMusicStatus;
+            tempSave.LoggedInStatus = GooglePlayController.CheckLogin();            
 
             tempSave.SFXVolume = s;
             tempSave.MusicVolume = m;
@@ -96,16 +95,13 @@ public class SaveManager : MonoBehaviour
             diffInfo.HighScore = score;
             tempSave.DifficultySaveDataList.Add(diffInfo);            
         }
-
-        //tempSave.SFXMute = gameController.GetSoundController.GetSFXStatus;
-        //tempSave.MusicMute = gameController.GetSoundController.GetMusicStatus;
         
         tempSave.SFXVolume = s;
         tempSave.MusicVolume = m;
 
         tempSave.LastPlayed = DateTime.Today.ToShortDateString();
 
-        //tempSave.LoggedInStatus = googlePlayController.CheckLogin();
+        tempSave.LoggedInStatus = GooglePlayController.CheckLogin();
         SaveSystem.SaveData(tempSave);
         
         DebugSystem.UpdateDebugText("Saving Done", false, doDebug);        
@@ -113,7 +109,7 @@ public class SaveManager : MonoBehaviour
   
     public void GetSaveInfo()
     {
-        //googlePlayController.InitGooglePlay();
+        googlePlayController.InitGooglePlay();
 
         if (SaveSystem.FileExist())
         {            
@@ -127,22 +123,19 @@ public class SaveManager : MonoBehaviour
                 gameController.ReloadGame();
                 return;
             }
-
-            //gameController.GetSoundController.SetSaveInfo(mainSaveInfo.SFXMute, mainSaveInfo.MusicMute);            
-
             gameController.GetSoundController.SetSaveInfo(mainSaveInfo.SFXVolume, mainSaveInfo.MusicVolume);
             gameController.GetBlockerController.SetSaveInfo(mainSaveInfo.Sensetivity);
 
             if (mainSaveInfo.LoggedInStatus == 1) //auto log in
             {                
-                //googlePlayController.LogIn();
+                googlePlayController.LogIn();
             }          
         }
         else
         {            
             DebugSystem.UpdateDebugText("No save file, using default values", false, doDebug);
 #if UNITY_ANDROID
-            //googlePlayController.FirstLogin();
+            googlePlayController.FirstLogin();
 #endif
             gameController.GetSoundController.SetSaveInfo(0.25f, 0.25f);
             gameController.GetBlockerController.SetSaveInfo(1f);

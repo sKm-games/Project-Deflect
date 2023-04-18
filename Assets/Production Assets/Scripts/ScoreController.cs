@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class ScoreController : MonoBehaviour
 {
+    [SerializeField] private AchievementController achivController;
     [SerializeField] private UIController uiController;
     [SerializeField] private int scoreReward;
     [SerializeField] private int scorePenalty;
@@ -31,6 +32,10 @@ public class ScoreController : MonoBehaviour
         totalScore += deflected ? scoreReward : scorePenalty;
         deflections += deflected ? 1 : 0;
         uiController.UpdateScoreText(totalScore);
+        if (deflected)
+        {
+            achivController.CheckDeflectedAchievements();
+        }
     }
 
     public void ResetScore()

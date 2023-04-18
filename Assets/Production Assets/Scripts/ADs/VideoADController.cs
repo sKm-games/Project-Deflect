@@ -16,17 +16,13 @@ public class VideoADController : MonoBehaviour, IUnityAdsLoadListener, IUnityAds
     [SerializeField] private Button gameOverVideoButton;
 
     private BannerADController bannerAD;
-    
-
-    //private AchievementController achievementController;        
 
     [SerializeField] string myPlacementId = "Rewarded_Android";
     [SerializeField] int adID; //0 - game over, 1 - redo throw
 
     public void Init()
     {                        
-        bannerAD = GetComponent<BannerADController>();        
-        //achievementController = gameController.GetGooglePlayController.GetAchievController;
+        bannerAD = GetComponent<BannerADController>();
     }
 
     public void OnUnityAdsReady(string placementId)
@@ -129,7 +125,10 @@ public class VideoADController : MonoBehaviour, IUnityAdsLoadListener, IUnityAds
         string s = $"VIDEO AD: Error loading Ad Unit {adUnitId}: {error.ToString()} - {message}";
         DebugSystem.UpdateDebugText(s, true);
         // Use the error details to determine whether to try to load another ad.
-        gameOverVideoButton.interactable = false;
+        ToggleAdButton(0, false);
+
+        //Try to load video again
+        Invoke("LoadVideoAD", 4f);
     }
 
     public void OnUnityAdsShowFailure(string adUnitId, UnityAdsShowError error, string message)
@@ -179,8 +178,6 @@ public class VideoADController : MonoBehaviour, IUnityAdsLoadListener, IUnityAds
                 Type00VideoADDone();                
                 break;
         }
-
-        //achievementController.CheckAchievement("HelpingOut");
     }
 
     private void Type00VideoADDone() //Double Dog Coins video ad at the end of a level

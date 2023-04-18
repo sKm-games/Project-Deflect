@@ -169,5 +169,21 @@ public class ProjectileController : MonoBehaviour
         }
     }
 
+    public void StopProgress()
+    {
+        StopAllCoroutines();
+        activeProjectiles = 0;
+
+        foreach (ProjectileObject po in projectilesList)
+        {
+            po.RemoveProjectile();
+        }
+
+        foreach (EffectObject eo in explosionsList)
+        {
+            eo.RemoveEffect();
+        }
+    }
+
 }
 

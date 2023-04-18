@@ -6,6 +6,7 @@ public class LevelController : MonoBehaviour
 {
     [SerializeField] private GameController gameController;
     [SerializeField] private UIController uiController;
+    [SerializeField] private GooglePlayController googlePlayController;
     private DifficultyController difficultyController;
     private ProjectileController projectileController;
 
@@ -68,6 +69,19 @@ public class LevelController : MonoBehaviour
         StartLevel();
     }
 
+    public void StopProgress()
+    {
+        StopAllCoroutines();
+        projectileController.StopProgress();
+
+        foreach (SpawnpointObject sp in spawnPointList)
+        {
+            sp.StopProgress();
+        }
+
+        uiController.UpdateCountdownText(0, false);
+    }
+
     public void StartLevel()
     {       
         if (levelRef >= levelList.Count)
@@ -108,22 +122,9 @@ public class LevelController : MonoBehaviour
         }
         
         while (totalShoots < a)
-        {
+        {   
             yield return null;
         }
-
-        //level over when all projectiles is used up for a level, see "UpdateActiveProjectiles" in "ProjectileController"
-
-        //fixed delay
-        /*yield return new WaitForSeconds(difficultyController.GetCurrentDifficulty.NextLevelDelay);
-         LevelOver();
-        */
-
-        //delay based on projectiles
-        /*float delay = difficultyController.GetNextLevelDelay(level);
-        yield return new WaitForSeconds(delay);        
-
-        LevelOver();*/
     }
 
     public void LevelOver()
@@ -133,6 +134,7 @@ public class LevelController : MonoBehaviour
             levelRef++;
             levelCount++;
             StartLevel();
+            googlePlayController.GetAchievementController.CheckLevelAchievements(difficultyController.GetCurrentDifficulty.Name, levelCount);
         }
     }
 
@@ -166,7 +168,7 @@ public class LevelController : MonoBehaviour
             activeTargetsPoolList.RemoveAt(0);
         }
 
-        return activeTargetsPoolList[0].transform;            
+        return activeTargetsPoolList.Count == 0 ? null : activeTargetsPoolList[0].transform;
     }
 
     public SpawnpointObject GetRandomSpawn()

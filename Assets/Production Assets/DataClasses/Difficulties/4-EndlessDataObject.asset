@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ID: 4
   Name: Endless
+  LeaderboardID: CgkIgMb1hfoVEAIQBg
   BackgroundSprite: {fileID: 21300000, guid: 1b730abb058d1c0409754bba9d266caf, type: 3}
   GroundSprite: {fileID: 21300000, guid: 66e97fa1f8e283e44b9c0b29e4a21607, type: 3}
   MoonSprite: {fileID: 21300000, guid: 66e97fa1f8e283e44b9c0b29e4a21607, type: 3}

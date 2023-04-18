@@ -21,9 +21,6 @@ public class SoundController : MonoBehaviour
     }
     [SerializeField] private List<AudioSource> sfxAudiosources;
 
-    //[SerializeField] private Toggle musicTogglePause;
-    //[SerializeField] private Toggle musicToggleSettings;
-
     [SerializeField] private Slider sfxSliderPause;
     private TextMeshProUGUI sfxSliderPauseText;
     [SerializeField] private Slider sfxSliderSettings;
@@ -33,7 +30,6 @@ public class SoundController : MonoBehaviour
     [SerializeField] private Slider musicSliderSettings;
     private TextMeshProUGUI musicSliderTextSettings;
 
-    //[SerializeField] private float musicMax;
     private bool musicStatus;
     public int GetMusicStatus
     {
@@ -45,6 +41,7 @@ public class SoundController : MonoBehaviour
     private AudioSource musicAudiosource;
 
     [SerializeField] private float fadeSpeed;
+    [SerializeField] private bool doDebug;
 
     private void Awake()
     {
@@ -59,11 +56,12 @@ public class SoundController : MonoBehaviour
 
     public void PlaySFX(string id)
     {
+        id = id.ToLower();
         SoundDataClass s = soundEffects.Find((x) => x.ID == id);
 
         if (s == null)
-        {
-            Debug.LogWarning($"SoundController: PlaySFX: soundData not found for sound {id}");
+        {            
+            return;
         }
 
         if (CheckIfLooping(s))
@@ -83,6 +81,7 @@ public class SoundController : MonoBehaviour
 
     private bool CheckIfLooping(SoundDataClass s)
     {        
+
         AudioSource a = sfxAudiosources.Find((x) => x.clip == s.Clip && x.loop);
 
         return a != null;
@@ -186,7 +185,7 @@ public class SoundController : MonoBehaviour
     //public void SetSaveInfo(int s, int m)
     public void SetSaveInfo(float s, float m)
     {
-        DebugSystem.UpdateDebugText("Set Sound Save Info");
+        DebugSystem.UpdateDebugText("Set Sound Save Info", false, doDebug);
         #region Toggles
         /* sfxStatus = s == 1 ? true : false;
 

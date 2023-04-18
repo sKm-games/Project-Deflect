@@ -9,6 +9,7 @@ public class DebugSystem : MonoBehaviour
 {
     [SerializeField] private GameController gameController;
     [SerializeField] private UIController uiController;
+    [SerializeField] private GooglePlayController googlePlayController;
 
     [SerializeField] private Transform debugUI;
     [SerializeField] private static TextMeshProUGUI debugText;
@@ -137,12 +138,12 @@ public class DebugSystem : MonoBehaviour
     {
         infinitLife = !infinitLife;
         InfinitLifeStatic = infinitLife;
-        t.text = $"Infinite Health\n {infinitLife}";
+        t.text = $"Gode Mode: \n {infinitLife}";
     }
 
     public void GooglePlayLogOut()
     {
-        //googlePlayController.LogOut();
+        googlePlayController.LogOut();
     }
 
     private void DebugUIRaycast()

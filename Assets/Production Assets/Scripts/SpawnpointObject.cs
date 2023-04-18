@@ -27,6 +27,7 @@ public class SpawnpointObject : MonoBehaviour
     public void SetAimInfo(float s, Color c, Vector3 t)
     {
         isReady = false;
+        lineRenderer.enabled = true;
         c = new Color(c.r, c.g, c.b, 0);
 
         lineRenderer.startWidth = s;
@@ -56,5 +57,11 @@ public class SpawnpointObject : MonoBehaviour
         
         lineRenderer.endWidth = s;
         lineRenderer.endColor = c;        
+    }
+
+    public void StopProgress()
+    {
+        lineRenderer.enabled = false;
+        isReady = false;
     }
 }

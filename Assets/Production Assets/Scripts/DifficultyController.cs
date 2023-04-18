@@ -1,9 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class DifficultyController : MonoBehaviour
 {
+    [SerializeField] private GameController gameController;
+    [SerializeField] private UIController uiController;
+    [SerializeField] private SoundController soundController;
     [SerializeField] private List<DifficultyDataClass> difficulties;
     [SerializeField] private DifficultyDataClass currentDifficulty;
     public DifficultyDataClass GetCurrentDifficulty
@@ -12,7 +16,7 @@ public class DifficultyController : MonoBehaviour
         {
             return currentDifficulty;
         }
-    }
+    }    
 
     public void SetDifficutly(int i)
     {
@@ -27,5 +31,11 @@ public class DifficultyController : MonoBehaviour
     public int GetDifficultyIndex()
     {
         return difficulties.FindIndex(x => x == currentDifficulty);        
+    }
+
+    public string GetDifficultyLeaderboardRef(int i)
+    {
+        Debug.Log($"GetDifficultyLeaderboardRef using index: {i}");
+        return difficulties[i].LeaderboardID;
     }
 }

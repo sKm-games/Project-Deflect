@@ -62,7 +62,8 @@ public class GameController : MonoBehaviour
         {
             return soundController;
         }
-    }
+    }    
+
 
     private bool gameIsRunning;
     public bool GameIsRunning
@@ -87,8 +88,6 @@ public class GameController : MonoBehaviour
         blockerController.ToggleBlocker(false);    
         
         levelController.Init();
-        
-        Time.timeScale = 1;
     }
 
     private void Start()
@@ -109,6 +108,7 @@ public class GameController : MonoBehaviour
             uiController.UpdateLevelText(0, difficultyController.GetCurrentDifficulty.endLess);
             uiController.UpdateScoreText(0);
             blockerController.ToggleBlocker(true);
+            Time.timeScale = 1;
         }
     }
 
