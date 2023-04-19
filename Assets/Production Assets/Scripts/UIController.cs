@@ -154,7 +154,7 @@ public class UIController : MonoBehaviour
     public void UpdateCountdownText(int a, bool b = true)
     {
         gameplayCountText.gameObject.SetActive(b);
-        string s = a > 0 ? a.ToString() : "Incoming!";
+        string s = a > 0 ? a.ToString() : "INCOMING!";
         gameplayCountText.text = s;
         gameplayCountText.transform.DOPunchScale(new Vector3(0.25f, 0.25f, 0f), 0.5f, 0 , 0);
     }

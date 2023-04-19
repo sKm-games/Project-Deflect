@@ -67,22 +67,40 @@ public class AchievementController : MonoBehaviour
     public void CheckAchievement(string nameRef)
     {
 #if UNITY_ANDROID
+        DebugSystem.UpdateDebugText($"AchievementController: CheckAchievement with nameRef {nameRef}", false, doDebug);
         AchievementsDataClass info = achievementsDataList.Find((x) => x.NameRef == nameRef);
 
         if (info == null)
         {
             DebugSystem.UpdateDebugText($"AchievementController: CheckAchievement: Invalid nameRef {nameRef}", true, doDebug);
             return;
-        }
-        int i = info.Instant == true ? 100 : info.IncrementValue;
+        }       
 
         if (!PlayGamesPlatform.Instance.IsAuthenticated()) //not logged in skip
         {
             DebugSystem.UpdateDebugText($"AchievementController: CheckAchievement: Not logged in", false, doDebug);
             return;
         }
-
-        PlayGamesPlatform.Instance.IncrementAchievement(info.AchievementID, i, (bool success) => { });
+        if (info.Instant)
+        {
+            Social.ReportProgress(info.AchievementID, 100.00, (bool success) => 
+            {
+                if (!success)
+                {
+                    DebugSystem.UpdateDebugText($"AchievementController: CheckAcievement: Failed to report instant using nameRef {nameRef}, check info");
+                }
+            });
+        }
+        else
+        {
+            PlayGamesPlatform.Instance.IncrementAchievement(info.AchievementID, info.IncrementValue, (bool success) =>
+            {
+                if (!success)
+                {
+                    DebugSystem.UpdateDebugText($"AchievementController: CheckAcievement: Failed to report incremental using nameRef {nameRef}, check info");
+                }
+            });
+        }        
 #endif
     }
 

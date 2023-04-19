@@ -62,7 +62,8 @@ public class GameController : MonoBehaviour
         {
             return soundController;
         }
-    }    
+    }
+    [SerializeField] private GooglePlayController googlePlayController;
 
 
     private bool gameIsRunning;
@@ -148,11 +149,13 @@ public class GameController : MonoBehaviour
     }
 
     private void GameIsOver()
-    {
-        Debug.Log("GameController: GameIsOver");
+    {        
         gameIsRunning = false;
         blockerController.ToggleBlocker(false);
         uiController.ToggleGameOverScreen(true, false, scoreController.GetTotalScore);
+
+        googlePlayController.GetLeaderbordController.PostScoreToLeaderboard(scoreController.GetTotalScore, difficultyController.GetCurrentDifficulty.LeaderboardID);
+
         saveManager.AddToSave(difficultyController.GetCurrentDifficulty.ID, scoreController.GetTotalScore, scoreController.GetDeflections);        
     }
 
