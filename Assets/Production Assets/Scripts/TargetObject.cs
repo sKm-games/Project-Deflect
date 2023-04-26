@@ -83,10 +83,15 @@ public class TargetObject : MonoBehaviour
     {
         //animations of something....
         isDead = true;
-        lights[2].gameObject.SetActive(false);
+        /*lights[2].gameObject.SetActive(false);
         lights[3].gameObject.SetActive(false);
         lights[4].gameObject.SetActive(false);
-        lights[5].gameObject.SetActive(false);
+        lights[5].gameObject.SetActive(false);*/
+
+        foreach (Light2D l in lights)
+        {
+            l.gameObject.SetActive(false);
+        }
 
         fireParticles[0].gameObject.SetActive(true);
         fireParticles[1].gameObject.SetActive(true);
@@ -96,6 +101,8 @@ public class TargetObject : MonoBehaviour
         fireParticles[5].gameObject.SetActive(false);
 
         targetCollider.enabled = false;
+
+        spriteRenderer.flipX = Random.Range(0, 2) == 0;
 
         gameController.UpdateLifes(-1);
         spriteRenderer.sprite = buildingSprites[1];
