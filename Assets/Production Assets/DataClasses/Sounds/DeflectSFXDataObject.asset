@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: DeflectSFXDataObject
   m_EditorClassIdentifier: 
   ID: deflect
-  Clip: {fileID: 8300000, guid: 7ea6a73e072ace944bc4cb618e7b3bf8, type: 3}
+  Clip: {fileID: 8300000, guid: c2ed824b4dea97140b9fa82aaa0728a1, type: 3}
   pitchRange: {x: 0.85, y: 1.15}
-  maxVolume: 0.25
+  maxVolume: 1
   loop: 0

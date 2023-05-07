@@ -95,7 +95,8 @@ public class SoundController : MonoBehaviour
             Debug.LogWarning($"SoundController: StopLoppSFX: source not found for sound {id}");
             return;
         }
-        a.Stop();
+        //a.Stop();
+        a.loop = false;
     }
 
     public void PlayMusic()

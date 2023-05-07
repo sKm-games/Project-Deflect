@@ -176,12 +176,12 @@ public class UIController : MonoBehaviour
         if (b)
         {
             gameOverTitleText.text = w ? "Winner!" : "Game Over!";
-            gameOverText.text = $"Score: \n{s}";            
-        }
-        videoADController.LoadVideoAD();
+            gameOverText.text = $"Score: \n{s}";
+            videoADController.LoadVideoAD();
+            videoADController.ToggleAdButton(0, !w);
+        }                
         gameOverScreen.SetActive(b);
-        pauseWindow.SetActive(false);
-        videoADController.ToggleAdButton(0, true);
+        pauseWindow.SetActive(false);        
     }
 
     public void TogglePauseScreen(bool b)

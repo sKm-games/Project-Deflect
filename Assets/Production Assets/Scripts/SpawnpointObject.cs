@@ -18,6 +18,8 @@ public class SpawnpointObject : MonoBehaviour
     }
     private LineRenderer lineRenderer;
 
+    [SerializeField] private List<TargetObject> invalidTarget;
+
     public void Awake()
     {
         lineRenderer = this.GetComponent<LineRenderer>();
@@ -46,14 +48,14 @@ public class SpawnpointObject : MonoBehaviour
     {
         Color c = lineRenderer.startColor;
         c = new Color(c.r, c.g, c.b, a);
-        lineRenderer.startColor = c;
+        //lineRenderer.startColor = c;
         lineRenderer.endColor = c;
     }
 
     public void SetShootInfo(float s, Color c)
     {
         lineRenderer.startWidth = s;
-        lineRenderer.startColor = c;
+        lineRenderer.startColor = new Color(c.r, c.g, c.b , 0);
         
         lineRenderer.endWidth = s;
         lineRenderer.endColor = c;        
@@ -63,5 +65,10 @@ public class SpawnpointObject : MonoBehaviour
     {
         lineRenderer.enabled = false;
         isReady = false;
+    }
+
+    public bool CheckValidTarget(TargetObject to)
+    {
+        return !invalidTarget.Contains(to);
     }
 }

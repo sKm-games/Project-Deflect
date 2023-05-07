@@ -45,8 +45,7 @@ public class AchievementController : MonoBehaviour
     }
 
     public void CheckLevelAchievements(string modeRef, int l)
-    {
-        DebugSystem.UpdateDebugText($"Mode Ref: {modeRef}, level {l}", false, doDebug);
+    {        
         if (modeRef == "Endless" && l > 9)
         {
             CheckAchievement("TestKeepGoing");

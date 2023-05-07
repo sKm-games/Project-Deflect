@@ -76,6 +76,9 @@ public class ProjectileController : MonoBehaviour
         }
 
         sp.SetShootInfo(data.ShotLaserSize, data.ShotLaserColor);
+        
+        gameController.GetSoundController.PlaySFX("shoot");
+        
         yield return new WaitForSeconds(data.ShotTime);
 
         sp.UpdateLaserAlpha(0);
@@ -83,7 +86,7 @@ public class ProjectileController : MonoBehaviour
         ProjectileObject p = GetProjectile();
         p.Launch(sp.transform, data.ProjectileSpeed);
 
-        gameController.GetSoundController.PlaySFX("shoot");
+        //gameController.GetSoundController.PlaySFX("shoot");
 
         sp.IsReady = true;
     }

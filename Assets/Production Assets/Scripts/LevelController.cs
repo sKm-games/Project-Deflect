@@ -18,10 +18,12 @@ public class LevelController : MonoBehaviour
 
     [SerializeField] private Transform spawnPointHolder;
     [SerializeField] private List<SpawnpointObject> spawnPointList;
+    private SpawnpointObject currentSpawnpoint;
 
     [SerializeField] private Transform targetHolder;
     [SerializeField] private List<TargetObject> targetsPoolList;
     [SerializeField] private List<TargetObject> activeTargetsPoolList;
+    private Transform previousTarget;
 
     [SerializeField] private List<int> levelList;
 
@@ -57,6 +59,7 @@ public class LevelController : MonoBehaviour
 
     IEnumerator IECountDown()
     {
+        gameController.GetSoundController.PlaySFX("alarm");
         int a = startTimer;
         
         while (a >= 0)
@@ -67,6 +70,9 @@ public class LevelController : MonoBehaviour
         }
         uiController.UpdateCountdownText(0, false);
         StartLevel();
+        
+        yield return new WaitForSeconds(1f);        
+        gameController.GetSoundController.StopLoopSFX("alarm");
     }
 
     public void StopProgress()
@@ -162,6 +168,35 @@ public class LevelController : MonoBehaviour
     public Transform GetTarget()
     {
         activeTargetsPoolList.Shuffle();
+        if (activeTargetsPoolList[0].IsDead)
+        {
+            activeTargetsPoolList.RemoveAt(0);
+        }
+
+        int tries = 0;
+        while (activeTargetsPoolList[0].transform == previousTarget && tries < 6)
+        {
+            activeTargetsPoolList.Shuffle();
+            tries++;
+        }
+
+        Transform t = activeTargetsPoolList[0].transform;
+
+        foreach (TargetObject to in activeTargetsPoolList)
+        {
+            if (currentSpawnpoint.CheckValidTarget(to))
+            {
+                t = to.transform;
+                break;
+            }
+        }
+        previousTarget = t;
+        return t;
+    }
+
+    /*public Transform GetTarget() //Old
+    {
+        activeTargetsPoolList.Shuffle();
 
         if (activeTargetsPoolList[0].IsDead)
         {
@@ -169,21 +204,27 @@ public class LevelController : MonoBehaviour
         }
 
         return activeTargetsPoolList.Count == 0 ? null : activeTargetsPoolList[0].transform;
-    }
+    }*/
 
     public SpawnpointObject GetRandomSpawn()
     {
         spawnPointList.Shuffle();
 
+        currentSpawnpoint = spawnPointList[0];
+
         foreach (SpawnpointObject s in spawnPointList)
         {
             if (s.IsReady)
             {
-                return s;
+                currentSpawnpoint = s;
+                break;
+                //return s;
             }
         }
 
-        return spawnPointList[0];
+        //return spawnPointList[0];
+        return currentSpawnpoint;
+        
     }
 
     public void GetLevelInfo(out int l, out string d)
