@@ -8,36 +8,11 @@ using DG.Tweening;
 
 public class UIController : MonoBehaviour
 {
-    [SerializeField] private GameController gameController;    
-    [SerializeField] private LevelController levelController;
-    [SerializeField] private DifficultyController difficultyController;
-    [SerializeField] private VideoADController videoADController;
-    [SerializeField] private SoundController soundController;
-    [SerializeField] private GooglePlayController googlePlayController;    
-    [SerializeField] private LoadingScreenController loadingScreenController;    
-    public LoadingScreenController GetLoadingScreenController
-    {
-        get
-        {
-            return loadingScreenController;
-        }
-    }
-    [SerializeField] private GameObject mainMenuUI;
+    [SerializeField] private MainMenuUIClass mainMenuUI;
 
-    [SerializeField] private List<Button> difficultiesModeButton;
-    [SerializeField] private List<Button> difficultiesLeaderboardButton;
-    [SerializeField] private GameObject pauseWindow;
-    private GameObject startScreen;
-    private GameObject modeSelectionScreen;
-    private GameObject settingScreen;
-    [SerializeField] private GameObject gameUI;
-    private GameObject gameplayScreen;
-    private TextMeshProUGUI gameplayLevelText;
-    private TextMeshProUGUI gameplayScoreText;
-    private TextMeshProUGUI gameplayCountText;
-    private GameObject gameOverScreen;
-    private TextMeshProUGUI gameOverTitleText;
-    private TextMeshProUGUI gameOverText;
+    [SerializeField] private GameplayUIClass gameplayUI;
+    
+    [SerializeField] private GameOverUIClass gameOverUI;
 
     [SerializeField] private GameObject googlePlayErrorScreen;
 
@@ -47,22 +22,7 @@ public class UIController : MonoBehaviour
     private void Awake()
     {
         versionText.text = $"v{Application.version}";
-        loadingScreenController.ToggleLoadingScreen(true);
-        
-        startScreen = mainMenuUI.transform.GetChild(0).gameObject;
-        modeSelectionScreen = mainMenuUI.transform.GetChild(1).gameObject;
-        settingScreen = mainMenuUI.transform.GetChild(2).gameObject;
-
-        gameplayScreen = gameUI.transform.GetChild(0).gameObject;
-        Transform t = gameplayScreen.transform.GetChild(0);
-        gameplayLevelText = t.GetChild(0).GetComponent<TextMeshProUGUI>();
-        gameplayScoreText = t.GetChild(1).GetComponent<TextMeshProUGUI>();
-
-        gameplayCountText = gameplayScreen.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
-
-        gameOverScreen = gameUI.transform.GetChild(1).gameObject;
-        gameOverTitleText = gameOverScreen.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
-        gameOverText = gameOverScreen.transform.GetChild(2).GetComponent<TextMeshProUGUI>();        
+        ReferencesController.GetLoadingScreenController.ToggleLoadingScreen(true);     
     }
 
     private void Start()
@@ -73,47 +33,53 @@ public class UIController : MonoBehaviour
 
     private void DefaultLayout()
     {
-        startScreen.SetActive(true);
-        modeSelectionScreen.SetActive(false);
-        settingScreen.SetActive(false);        
+        mainMenuUI.BackgroundImage.SetActive(true);
+        mainMenuUI.StartScreen.SetActive(true);
+        mainMenuUI.ModeSelectScreen.SetActive(false);
+        mainMenuUI.SettingsScreen.SetActive(false);
+        mainMenuUI.GameInfoScreen.SetActive(false);
+        mainMenuUI.CreditsScreen.SetActive(false);
 
-        gameplayScreen.SetActive(false);
-        gameOverScreen.SetActive(false);
-        pauseWindow.SetActive(false);
+        
+        gameplayUI.GameplayScreen.SetActive(false);
+        gameplayUI.PauseScreen.SetActive(false);
+        gameplayUI.CountdownText.text = "0";
+        gameOverUI.GameOverScreen.SetActive(false);
+        
 
         googlePlayErrorScreen.SetActive(false);
         
         Time.timeScale = 1;
-        gameController.GameIsRunning = false;
-        gameplayCountText.text = "0";
+        ReferencesController.GetGameController.GameIsRunning = false;
+        
     }
 
     private void SetupDiffictiesButtons()
     {
-        for (int i = 0; i < difficultiesModeButton.Count; i++)
+        for (int i = 0; i < mainMenuUI.ModeSelectButtons.Count; i++)
         {
-            difficultiesModeButton[i].onClick.RemoveAllListeners();
-            difficultiesModeButton[i].onClick.AddListener(() => gameController.StartGame(i));
-            difficultiesModeButton[i].onClick.AddListener(() => ModesToGame());
+            mainMenuUI.ModeSelectButtons[i].onClick.RemoveAllListeners();
+            mainMenuUI.ModeSelectButtons[i].onClick.AddListener(() => ReferencesController.GetGameController.StartGame(i));
+            mainMenuUI.ModeSelectButtons[i].onClick.AddListener(() => ModesToGame());
         }
 
-        for (int i = 0; i < difficultiesLeaderboardButton.Count; i++)
+        for (int i = 0; i < mainMenuUI.ModeLeaderboardButtons.Count; i++)
         {
-            difficultiesLeaderboardButton[i].onClick.RemoveAllListeners();
+            mainMenuUI.ModeLeaderboardButtons[i].onClick.RemoveAllListeners();
             int index = i;
-            difficultiesLeaderboardButton[i].onClick.AddListener(() => ShowLeaderboard(index));
+            mainMenuUI.ModeLeaderboardButtons[i].onClick.AddListener(() => ShowLeaderboard(index));
         }
     }
 
     public void ShowLeaderboard(int i)
     {
-        string s = difficultyController.GetDifficultyLeaderboardRef(i);
-        googlePlayController.GetLeaderbordController.ShowSpecificLeaderboard(s);
+        string s = ReferencesController.GetDifficultyController.GetDifficultyLeaderboardRef(i);
+        ReferencesController.GetLeaderboardController.ShowSpecificLeaderboard(s);
     }
 
     public void UpdateLeadeboardButtons()
     {
-        foreach (Button b in difficultiesLeaderboardButton)
+        foreach (Button b in mainMenuUI.ModeLeaderboardButtons)
         {
             b.interactable = GooglePlayController.CheckLogin() == 1 ? true : false;
         }
@@ -121,81 +87,96 @@ public class UIController : MonoBehaviour
 
     public void ModesToGame()
     {
-        modeSelectionScreen.SetActive(false);
-        gameplayScreen.SetActive(true);
-        soundController.PlaySFX("button");
+        mainMenuUI.ModeSelectScreen.SetActive(false);
+        mainMenuUI.BackgroundImage.SetActive(false);
+        gameplayUI.GameplayScreen.SetActive(true);        
+        ReferencesController.GetSoundController.PlaySFX("button");
     }
 
     public void StartScreenToMode()
     {
-        startScreen.SetActive(false);
+        mainMenuUI.StartScreen.SetActive(false);
         UpdateLeadeboardButtons();
-        soundController.PlaySFX("button");
-        modeSelectionScreen.SetActive(true);
+        ReferencesController.GetSoundController.PlaySFX("button");
+        mainMenuUI.ModeSelectScreen.SetActive(true);
     }
 
     public void SettingToStartScreen()
     {
-        settingScreen.SetActive(false);
-        startScreen.SetActive(true);
-        gameController.GetSaveManager.AddToSave("", 0, 0);
-        soundController.PlaySFX("button");
+        mainMenuUI.SettingsScreen.SetActive(false);
+        mainMenuUI.StartScreen.SetActive(true);
+        ReferencesController.GetSaveManager.AddToSave("", 0, 0);
+        ReferencesController.GetSoundController.PlaySFX("button");
     }
 
     public void GameToStartScreen()
     {
-        levelController.ResetTargets();
-        levelController.StopProgress();        
-        gameController.GetBlockerController.ToggleBlocker(false);
-        gameController.GameIsRunning = false;
+        ReferencesController.GetLevelController.ResetTargets();
+        ReferencesController.GetLevelController.StopProgress();
+        ReferencesController.GetBlockerController.ToggleBlocker(false);
+        ReferencesController.GetGameController.GameIsRunning = false;
         DefaultLayout();
     }
 
     public void UpdateCountdownText(int a, bool b = true)
     {
-        gameplayCountText.gameObject.SetActive(b);
+        gameplayUI.CountdownText.gameObject.SetActive(b);
         string s = a > 0 ? a.ToString() : "INCOMING!";
-        gameplayCountText.text = s;
-        gameplayCountText.transform.DOPunchScale(new Vector3(0.25f, 0.25f, 0f), 0.5f, 0 , 0);
+        gameplayUI.CountdownText.text = s;
+        gameplayUI.CountdownText.transform.DOPunchScale(new Vector3(0.25f, 0.25f, 0f), 0.5f, 0 , 0);
     }
 
     public void UpdateScoreText(int s)
     {
-        gameplayScoreText.text = $"Score: {s}";
+        gameplayUI.ScoreText.text = $"Score: {s}";
     }
 
     public void UpdateLevelText(int l, bool e)
-    {        
-        levelController.GetLevelInfo(out int totalLevels, out string difficulty);
+    {
+        ReferencesController.GetLevelController.GetLevelInfo(out int totalLevels, out string difficulty);
         string s = e ? $"{difficulty}: {(l + 1).ToString("00")}" : $"{difficulty}: {(l + 1).ToString("00")}/{totalLevels}";        
-        gameplayLevelText.text = s;
+        gameplayUI.LevelText.text = s;
     }
 
-    public void ToggleGameOverScreen(bool b, bool w, int s)
+    public void ToggleGameOverScreen(bool b, bool w)
     {
         if (b)
         {
-            gameOverTitleText.text = w ? "Winner!" : "Game Over!";
-            gameOverText.text = $"Score: \n{s}";
-            videoADController.LoadVideoAD();
-            videoADController.ToggleAdButton(0, !w);
-        }                
-        gameOverScreen.SetActive(b);
-        pauseWindow.SetActive(false);        
+            ReferencesController.GetScoreController.GetGameOverInfo(out int score, out int deflects);
+            ReferencesController.GetDifficultyController.GetGameOverInfo(out string diffID, out string leaderID);
+            
+            bool newHighscore = ReferencesController.GetLeaderboardController.CheckNewAllTimeHighscore(score, leaderID);
+            ReferencesController.GetLeaderboardController.PostScoreToLeaderboard(score, leaderID);
+            
+            ReferencesController.GetSaveManager.AddToSave(diffID, score, deflects);
+
+            gameOverUI.TitleText.text = w ? "Winner!" : "Game Over!";
+            string colorString = ColorUtility.ToHtmlStringRGBA(gameOverUI.HighScoreTextColor);
+            Debug.Log($"colorString {colorString}");
+            gameOverUI.ScoreText.text = newHighscore ? $"<b><color=#{colorString}>New \nHigh Score</b></color>\nScore: \n{score}" : $"\n\nScore: \n{score}";
+
+            ReferencesController.GetVideoADController.LoadVideoAD();
+            ReferencesController.GetVideoADController.ToggleAdButton(0, !w);
+            gameOverUI.LeaderboardButton.interactable = GooglePlayController.CheckLogin() == 1 ;
+            
+
+        }
+        gameOverUI.GameOverScreen.SetActive(b);
+        gameplayUI.PauseScreen.SetActive(false);        
     }
 
     public void TogglePauseScreen(bool b)
     {
-        gameController.GetBlockerController.AllowMove = !b;
-        pauseWindow.SetActive(b);
+        ReferencesController.GetBlockerController.AllowMove = !b;
+        gameplayUI.PauseScreen.SetActive(b);
 
         if (!b)
         {
-            gameController.GetSaveManager.AddToSave("", 0, 0);   
+            ReferencesController.GetSaveManager.AddToSave("", 0, 0);   
         }
 
         Time.timeScale = b ? 0 : 1;
-        soundController.PlaySFX("button");
+        ReferencesController.GetSoundController.PlaySFX("button");
     }
 
     public bool CheckScreenStatus(string id)
@@ -203,7 +184,7 @@ public class UIController : MonoBehaviour
         switch (id)
         {
             case "startScreen":
-                return startScreen.activeSelf;
+                return mainMenuUI.StartScreen.activeSelf;
         }
         DebugSystem.UpdateDebugText($"UIController: CheckScreenStatus: Invalid ID {id}");
         return false;        
@@ -211,7 +192,7 @@ public class UIController : MonoBehaviour
 
     public void ToggleLoadingScreen(bool b)
     {
-        loadingScreenController.ToggleLoadingScreen(b);
+        ReferencesController.GetLoadingScreenController.ToggleLoadingScreen(b);
     }
 
     public void ToggleGooglePlayErrorScreen(bool b)
@@ -219,7 +200,7 @@ public class UIController : MonoBehaviour
         googlePlayErrorScreen.SetActive(b);
         if (!b)
         {
-            soundController.PlaySFX("button");
+            ReferencesController.GetSoundController.PlaySFX("button");
         }
     }
 }

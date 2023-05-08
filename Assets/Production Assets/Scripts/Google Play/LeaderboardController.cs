@@ -5,8 +5,6 @@ using GooglePlayGames;
 
 public class LeaderboardController : MonoBehaviour
 {
-    [SerializeField] private DifficultyController difficultyController;
-    
     public void PostScoreToLeaderboard(int s, string id)
     {
 #if UNITY_ANDROID
@@ -20,7 +18,7 @@ public class LeaderboardController : MonoBehaviour
             if (success)
             {
                 DebugSystem.UpdateDebugText("HighscoreController: PostScoreToLeaderboard: Score posted");
-                CheckLeaderboardScore(id);
+                //CheckLeaderboardScore(id); //Add leter for achivements
             }
             else
             {
@@ -45,7 +43,7 @@ public class LeaderboardController : MonoBehaviour
     public void ShowCurrentLeaderboard()
     {
 #if UNITY_ANDROID
-        string id = difficultyController.GetCurrentDifficulty.LeaderboardID;
+        string id = ReferencesController.GetDifficultyController.GetCurrentDifficulty.LeaderboardID;
         if (GooglePlayController.CheckLogin() == 0)
         {
             DebugSystem.UpdateDebugText("HighscoreController: ShowLeaderboard: Not logged in, skip");
@@ -53,7 +51,6 @@ public class LeaderboardController : MonoBehaviour
         }
         PlayGamesPlatform.Instance.ShowLeaderboardUI(id);
 #endif
-
     }
 
     public void CheckLeaderboardScore(string id)
@@ -65,25 +62,42 @@ public class LeaderboardController : MonoBehaviour
 #endif
     }
 
-    private void LoadAllTimeScore(string id) //test for checking rank and score, to be used with achievements in the future
+    private ILeaderboard LoadAllTimeScore(string id) //test for checking rank and score, to be used with achievements in the future
     {
         DebugSystem.UpdateDebugText($"LeaderboardController: LoadAllTimeScore: Start");
         ILeaderboard lb = PlayGamesPlatform.Instance.CreateLeaderboard();
         lb.id = id;
-
         lb.timeScope = TimeScope.AllTime;
+        bool found = false;
         lb.LoadScores(success =>
         {
             if (success)
             {
                 DebugSystem.UpdateDebugText($"LeaderboardController: LoadAllTimeScore: AllTime score found with rank {lb.localUserScore.rank} and score {lb.localUserScore.value}");
-
+                found = true;
             }
             else
             {
                 DebugSystem.UpdateDebugText($"LeaderboardController: LoadAllTimeScore: Failed to check AllTime score with id {lb.id}");
+                found = false;
             }
         });
+        return found ? lb : null;
+    }
+
+    public bool CheckNewAllTimeHighscore(int score, string id)
+    {
+        ILeaderboard allTime = LoadAllTimeScore(id);
+
+        if (allTime == null)
+        {
+            return false;
+        }
+        bool b = score > allTime.localUserScore.value;
+
+        DebugSystem.UpdateDebugText($"CheckNewAllTimeHighscore: New High Score {b}");
+
+        return b;
     }
 
     private void LoadWeekScore(string id) //test for checking rank and score, to be used with achievements in the future

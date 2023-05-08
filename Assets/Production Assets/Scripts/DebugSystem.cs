@@ -7,12 +7,10 @@ using TMPro;
 
 public class DebugSystem : MonoBehaviour
 {
-    [SerializeField] private GameController gameController;
-    [SerializeField] private UIController uiController;
-    [SerializeField] private GooglePlayController googlePlayController;
-
     [SerializeField] private Transform debugUI;
-    [SerializeField] private static TextMeshProUGUI debugText;
+    private static Transform debugUIStatic;
+    [SerializeField] private TextMeshProUGUI debugText;
+    private static TextMeshProUGUI debugTextStatic;
     [SerializeField] private bool active;
     
     
@@ -34,8 +32,9 @@ public class DebugSystem : MonoBehaviour
 
     private void Awake()
     {
-        Application.logMessageReceived += LogCaughtException;        
-        debugText = debugUI.GetChild(0).GetComponent<TextMeshProUGUI>();
+        Application.logMessageReceived += LogCaughtException;
+        debugUIStatic = debugUI;
+        debugTextStatic = debugText;
         autoOnStatic = autoOn;
         InfinitLifeStatic = infinitLife;
 
@@ -56,7 +55,7 @@ public class DebugSystem : MonoBehaviour
 
     private void Start()
     {
-        CheckDebugStatus();        
+        CheckDebugStatus();
     }
 
     private void Update()
@@ -65,7 +64,7 @@ public class DebugSystem : MonoBehaviour
         {
             return;
         }
-        if (uiController.CheckScreenStatus("startScreen"))
+        if (ReferencesController.GetUIController.CheckScreenStatus("startScreen"))
         {
             if (Input.GetButtonDown("Fire1"))
             {
@@ -91,20 +90,20 @@ public class DebugSystem : MonoBehaviour
 
     private void CheckDebugStatus()
     {
-        debugText.transform.parent.gameObject.SetActive(active);
+        debugUI.gameObject.SetActive(active);
         UpdateDebugText("Debug UI: " + active, false, true);
     }
 
     private static void ActivateUI()
     {
-        debugText.transform.parent.gameObject.SetActive(true);
+        debugUIStatic.gameObject.SetActive(true);
         UpdateDebugText("Debug UI: " + true, false, true);
     }
 
     public void HideDebugUI()
     {
         active = false;
-        debugText.transform.parent.gameObject.SetActive(active);
+        debugUI.gameObject.SetActive(active);
         UpdateDebugText("Debug UI: " + active, false, true);
     }
 
@@ -115,11 +114,11 @@ public class DebugSystem : MonoBehaviour
             return;
         }
 
-        if (debugText == null)
+        if (debugTextStatic == null)
         {
             return;
         }
-        debugText.text = s + "\n" + debugText.text;
+        debugTextStatic.text = s + "\n---------\n" + debugTextStatic.text;
 
         if (f && autoOnStatic)
         {
@@ -131,7 +130,7 @@ public class DebugSystem : MonoBehaviour
     public void DebugClearText()
     {
         Debug.LogWarning("Clear debug");
-        debugText.text = "Debug:\n";
+        debugTextStatic.text = "Debug:\n";
     }
 
     public void DebugToggleInfinitLevel(TextMeshProUGUI t)
@@ -143,7 +142,7 @@ public class DebugSystem : MonoBehaviour
 
     public void GooglePlayLogOut()
     {
-        googlePlayController.LogOut();
+        ReferencesController.GetGooglePlayController.LogOut();
     }
 
     private void DebugUIRaycast()

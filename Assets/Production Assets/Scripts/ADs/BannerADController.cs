@@ -63,6 +63,8 @@ public class BannerADController : MonoBehaviour
         ShowBannerAd();
 #if UNITY_EDITOR
         placeHolderAD.SetActive(usePlaceholder);
+#else
+        placeHolderAD.SetActive(false);
 #endif
     }
 

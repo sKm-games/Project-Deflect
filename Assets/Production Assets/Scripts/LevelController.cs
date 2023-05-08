@@ -4,12 +4,6 @@ using UnityEngine;
 
 public class LevelController : MonoBehaviour
 {
-    [SerializeField] private GameController gameController;
-    [SerializeField] private UIController uiController;
-    [SerializeField] private GooglePlayController googlePlayController;
-    private DifficultyController difficultyController;
-    private ProjectileController projectileController;
-
     [SerializeField] private int startTimer;
     [SerializeField] private int levelRef; //used to as index for levelList    
     [SerializeField] private int levelCount; //used to track level for ui, mostly for endless mode
@@ -26,13 +20,6 @@ public class LevelController : MonoBehaviour
     private Transform previousTarget;
 
     [SerializeField] private List<int> levelList;
-
-    private void Awake()
-    {
-        difficultyController = this.GetComponent<DifficultyController>();
-        projectileController = this.GetComponent<ProjectileController>();
-    }
-
     public void Init()
     {
         targetsPoolList = new List<TargetObject>(targetHolder.GetComponentsInChildren<TargetObject>());
@@ -51,7 +38,7 @@ public class LevelController : MonoBehaviour
             totalShoots = 0;
             levelRef = 0;
             levelCount = 0;
-            levelList = new List<int>(difficultyController.GetCurrentDifficulty.LevelsProjectiles);
+            levelList = new List<int>(ReferencesController.GetDifficultyController.GetCurrentDifficulty.LevelsProjectiles);
         }        
         SetTargets();        
         StartCoroutine(IECountDown());
@@ -59,52 +46,61 @@ public class LevelController : MonoBehaviour
 
     IEnumerator IECountDown()
     {
-        gameController.GetSoundController.PlaySFX("alarm");
+        bool alarm = ReferencesController.GetSettingsController.GetAllowAlarm;
+        if (alarm)
+        {
+            ReferencesController.GetSoundController.PlaySFX("alarm");
+        }
+        
         int a = startTimer;
         
         while (a >= 0)
         {
-            uiController.UpdateCountdownText(a);
+            ReferencesController.GetUIController.UpdateCountdownText(a);
             a--;
             yield return new WaitForSeconds(1f);
         }
-        uiController.UpdateCountdownText(0, false);
+        ReferencesController.GetUIController.UpdateCountdownText(0, false);
         StartLevel();
         
-        yield return new WaitForSeconds(1f);        
-        gameController.GetSoundController.StopLoopSFX("alarm");
+        yield return new WaitForSeconds(1f);
+        if (alarm)
+        {
+            ReferencesController.GetSoundController.StopLoopSFX("alarm");
+        }        
     }
 
     public void StopProgress()
     {
         StopAllCoroutines();
-        projectileController.StopProgress();
+        ReferencesController.GetProjectileController.StopProgress();
 
         foreach (SpawnpointObject sp in spawnPointList)
         {
             sp.StopProgress();
         }
 
-        uiController.UpdateCountdownText(0, false);
+        ReferencesController.GetUIController.UpdateCountdownText(0, false);
     }
 
     public void StartLevel()
-    {       
+    {
+        bool endless = ReferencesController.GetDifficultyController.GetCurrentDifficulty.endLess;
         if (levelRef >= levelList.Count)
         {
-            if (difficultyController.GetCurrentDifficulty.endLess) //reset level count and shuffle list for endless
+            if (endless) //reset level count and shuffle list for endless
             {
                 levelList.Shuffle();
                 levelRef = 0;
             }
             else
             {
-                gameController.Winner();
+                ReferencesController.GetGameController.GameIsOver(false);
                 return;
             }            
         }
 
-        uiController.UpdateLevelText(levelCount, difficultyController.GetCurrentDifficulty.endLess);
+        ReferencesController.GetUIController.UpdateLevelText(levelCount, endless);
 
         int amount = levelList[levelRef];
         StartCoroutine(IEProgressLevel(amount));
@@ -116,13 +112,13 @@ public class LevelController : MonoBehaviour
         for (int i = 0; i < a; i++)
         {
             SpawnpointObject sp = GetRandomSpawn();
-            projectileController.DoLaunchProjectile(sp);
+            ReferencesController.GetProjectileController.DoLaunchProjectile(sp);
             totalShoots++;
 
-            yield return new WaitForSeconds(difficultyController.GetCurrentDifficulty.NextShotDelay);
+            yield return new WaitForSeconds(ReferencesController.GetDifficultyController.GetCurrentDifficulty.NextShotDelay);
         }
         
-        while (!gameController.GameIsRunning)
+        while (!ReferencesController.GetGameController.GameIsRunning)
         {
             yield return null;
         }
@@ -135,19 +131,20 @@ public class LevelController : MonoBehaviour
 
     public void LevelOver()
     {
-        if (gameController.GameIsRunning)
+        if (ReferencesController.GetGameController.GameIsRunning)
         {
             levelRef++;
             levelCount++;
             StartLevel();
-            googlePlayController.GetAchievementController.CheckLevelAchievements(difficultyController.GetCurrentDifficulty.Name, levelCount);
+            string diffName = ReferencesController.GetDifficultyController.GetCurrentDifficulty.Name;
+            ReferencesController.GetAchievementController.CheckLevelAchievements(diffName, levelCount);
         }
     }
 
     private void SetTargets()
     {
         activeTargetsPoolList = new List<TargetObject>();
-        int t = difficultyController.GetCurrentDifficulty.TargetAmount;
+        int t = ReferencesController.GetDifficultyController.GetCurrentDifficulty.TargetAmount;
         for (int i = 0; i < targetsPoolList.Count; i++)
         {
             if (i < t)
@@ -162,7 +159,7 @@ public class LevelController : MonoBehaviour
             }            
         }
 
-        gameController.SetLifes(activeTargetsPoolList.Count);
+        ReferencesController.GetGameController.SetLifes(activeTargetsPoolList.Count);
     }
 
     public Transform GetTarget()
@@ -229,8 +226,9 @@ public class LevelController : MonoBehaviour
 
     public void GetLevelInfo(out int l, out string d)
     {
-        l = difficultyController.GetCurrentDifficulty.LevelsProjectiles.Count;
-        d = difficultyController.GetCurrentDifficulty.Name;
+        DifficultyDataClass info = ReferencesController.GetDifficultyController.GetCurrentDifficulty;
+        l = info.LevelsProjectiles.Count;
+        d = info.Name;
     }
 
     public void ResetTargets()
@@ -240,7 +238,7 @@ public class LevelController : MonoBehaviour
             t.ResetTagets();
         }
 
-        gameController.SetLifes(activeTargetsPoolList.Count);
+        ReferencesController.GetGameController.SetLifes(activeTargetsPoolList.Count);
     }
 
 }

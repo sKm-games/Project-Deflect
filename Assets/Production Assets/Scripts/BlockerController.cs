@@ -16,37 +16,17 @@ public class BlockerController : MonoBehaviour
     }
 
     [SerializeField] private Transform blockerPivot;
-    [SerializeField] private float rotationLimit;
-       
+    [SerializeField] private float rotationLimit;       
 
     [SerializeField] private SpriteRenderer blockerObject;
 
-
-    [SerializeField] private Slider senseSliderPause;
-    private TextMeshProUGUI sensSliderPauseText;
-    [SerializeField] private Slider senseSliderSettings;
-    private TextMeshProUGUI sensSliderSettingsText;
-    [SerializeField] private float sensetivity;
-
-    public float Sensetivity
-    {
-        get
-        {
-            return sensetivity;
-        }
-        set
-        {
-            sensetivity = value;
-        }
-    }
+    private float sensitivity;
     [SerializeField] private float androidOffset;
     [SerializeField] private float editorOffset;
     private float offset;
 
     private void Awake()
     {
-        sensSliderPauseText = senseSliderPause.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
-        sensSliderSettingsText = senseSliderSettings.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
 #if UNITY_ANDROID
         offset = androidOffset;
 #endif
@@ -67,6 +47,8 @@ public class BlockerController : MonoBehaviour
             AddativeRotation();
         }
 
+        CheckValidRotation();
+
         /*if (allowMove)
         {
             DirectRotateBlocker();
@@ -82,13 +64,23 @@ public class BlockerController : MonoBehaviour
     private void AddativeRotation()
     {
         float mouse = Input.GetAxis("Mouse X");        
-        float z = (-mouse * offset) * sensetivity;
+        float z = (-mouse * offset) * sensitivity;        
+        blockerPivot.Rotate(new Vector3(0, 0, z));        
+    }
 
-        if ((blockerPivot.rotation.z <= -rotationLimit && z < 0) || (blockerPivot.rotation.z >= rotationLimit && z > 0))
-        {
+    private void CheckValidRotation()
+    {
+        if (blockerPivot.rotation.z <= -rotationLimit) //reset to maximum roation
+        {            
+            Quaternion q = blockerPivot.rotation;
+            blockerPivot.rotation = new Quaternion(q.x, q.y, -rotationLimit, q.w);
             return;
         }
-        blockerPivot.Rotate(new Vector3(0, 0, z));
+        else if (blockerPivot.rotation.z >= rotationLimit) //reset to maximum rotation
+        {         
+            Quaternion q = blockerPivot.rotation;
+            blockerPivot.rotation = new Quaternion(q.x, q.y, rotationLimit, q.w);
+        }
     }
 
     private void DirectRotateBlocker() //rotatet toward mouse
@@ -110,22 +102,8 @@ public class BlockerController : MonoBehaviour
         blockerPivot.gameObject.SetActive(b);
     }
 
-    public void UpdateSensetivity(Slider s)
+    public void UpdateSensitivity(float s)
     {
-        sensetivity = (float)decimal.Round((decimal)s.value, 1);
-        senseSliderPause.SetValueWithoutNotify(sensetivity);
-        sensSliderPauseText.text = $"Sensetivity: {sensetivity}";
-        senseSliderSettings.SetValueWithoutNotify(sensetivity);
-        sensSliderSettingsText.text = $"Sensetivity: {sensetivity}";
+        sensitivity = s;        
     }
-
-    public void SetSaveInfo(float s)
-    {
-        sensetivity = s;
-        senseSliderPause.SetValueWithoutNotify(sensetivity);
-        sensSliderPauseText.text = $"Sensetivity: {sensetivity}";
-        senseSliderSettings.SetValueWithoutNotify(sensetivity);
-        sensSliderSettingsText.text = $"Sensetivity: {sensetivity}";
-    }
-
 }

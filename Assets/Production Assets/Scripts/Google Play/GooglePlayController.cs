@@ -5,26 +5,6 @@ using UnityEngine.UI;
 
 public class GooglePlayController : MonoBehaviour
 {
-    [SerializeField] private AchievementController achievementController;
-    public AchievementController GetAchievementController
-    {
-        get
-        {
-            return achievementController;
-        }
-    }
-    [SerializeField] private LeaderboardController leaderboardController;
-    public LeaderboardController GetLeaderbordController
-    {
-        get
-        {
-            return leaderboardController;
-        }
-    }
-    [SerializeField] private SoundController soundController;
-    [SerializeField] private SaveManager saveManager;
-    [SerializeField] private UIController uiController;
-
     [SerializeField] private Button loginButton;
     private Image loginImage;
     [SerializeField] private Sprite googlePlayLogin;
@@ -75,15 +55,14 @@ public class GooglePlayController : MonoBehaviour
 
     private void LoginError()
     {
-        uiController.ToggleGooglePlayErrorScreen(true);
+        ReferencesController.GetUIController.ToggleGooglePlayErrorScreen(true);
     }
 
     public void LogIn()
     {
         DebugSystem.UpdateDebugText("Google Play LogIn, Start normal login, 0", false, doDebug);
 #if UNITY_ANDROID
-        DebugSystem.UpdateDebugText("Google Play LogIn, Start login status " + Social.localUser.authenticated, false, doDebug);
-        soundController.PlaySFX("Button");
+        DebugSystem.UpdateDebugText("Google Play LogIn, Start login status " + Social.localUser.authenticated, false, doDebug);        
         Social.localUser.Authenticate(success => {
             if (success)
             {
@@ -107,8 +86,8 @@ public class GooglePlayController : MonoBehaviour
 
     private void LoadingScreenOff()
     {
-        uiController.ToggleLoadingScreen(false);
-        soundController.PlayMusic();
+        ReferencesController.GetUIController.ToggleLoadingScreen(false);
+        ReferencesController.GetSoundController.PlayMusic();
     }
 
     public void UpdateLogInButton()
@@ -130,12 +109,12 @@ public class GooglePlayController : MonoBehaviour
         {
             DebugSystem.UpdateDebugText("Google Play LogIn, Update Login buttons to login", false, doDebug);
             loginButton.onClick.RemoveAllListeners();
-            bool silent = saveManager.MainSaveInfo.LoggedInStatus == 1;            
+            bool silent = ReferencesController.GetSaveManager.MainSaveInfo.LoggedInStatus == 1;            
             loginButton.onClick.AddListener(() => LogIn());
             loginImage.sprite = googlePlayLogin;
         }
-        achievementController.AchievButton.interactable = active;
-        saveManager.AddToSave("", 0, 0);
+        ReferencesController.GetAchievementController.AchievButton.interactable = active;
+        ReferencesController.GetSaveManager.AddToSave("", 0, 0);
 #endif
     }
 

@@ -5,12 +5,9 @@ using UnityEngine.Rendering.Universal;
 
 public class TargetObject : MonoBehaviour
 {
-    [SerializeField] private GameController gameController;
-    [SerializeField] private GooglePlayController googlePlayController;
-
     [SerializeField] private List<Sprite> buildingSprites;
     private SpriteRenderer spriteRenderer;    
-    private List<UnityEngine.Rendering.Universal.Light2D> lights;
+    private List<Light2D> lights;
     private List<ParticleSystem> fireParticles;
     private int fireIndex;
 
@@ -51,7 +48,7 @@ public class TargetObject : MonoBehaviour
     {
         if (!doOnce)
         {
-            gameController.GetSoundController.PlaySFX("fire");
+            ReferencesController.GetSoundController.PlaySFX("fire");
             doOnce = true;
         }
         if (activeHealth <= 0)
@@ -104,10 +101,10 @@ public class TargetObject : MonoBehaviour
 
         spriteRenderer.flipX = Random.Range(0, 2) == 0;
 
-        gameController.UpdateLifes(-1);
+        ReferencesController.GetGameController.UpdateLifes(-1);
         spriteRenderer.sprite = buildingSprites[1];
 
-        googlePlayController.GetAchievementController.CheckHealthAchievements();
+        ReferencesController.GetAchievementController.CheckHealthAchievements();
         
     }
 
@@ -128,7 +125,7 @@ public class TargetObject : MonoBehaviour
 
         spriteRenderer.sprite = buildingSprites[0];
 
-        gameController.GetSoundController.StopLoopSFX("fire");
+        ReferencesController.GetSoundController.StopLoopSFX("fire");
 
         targetCollider.enabled = true;
 

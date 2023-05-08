@@ -7,10 +7,10 @@ public class EffectObject : MonoBehaviour
     [SerializeField] private ParticleSystem effectParticles;
     [SerializeField] private float lifeTime;
 
-    public void DoEffect(SoundController s)
+    public void DoEffect()
     {
         effectParticles.Play();
-        s.PlaySFX("explosion");
+        ReferencesController.GetSoundController.PlaySFX("explosion");
         Invoke("RemoveEffect", lifeTime);
     }
 

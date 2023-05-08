@@ -5,10 +5,6 @@ using System;
 
 public class SaveManager : MonoBehaviour
 {    
-    [SerializeField] private GameController gameController;
-    [SerializeField] private UIController uiController;
-    [SerializeField] private GooglePlayController googlePlayController;
-    
     [SerializeField] private int currentSaveVersion;
     [Serializable]
     public class DifficultySaveDataClass
@@ -22,11 +18,11 @@ public class SaveManager : MonoBehaviour
     public class SaveInfoClass
     {
         public int SaveVersion; //holds the SaveSystem versio, used to auto delet save files if needed
-        //public int SFXMute; //holds the status of SFXmute
-        //public int MusicMute; //holds the status of Musicmute
         public float SFXVolume;
         public float MusicVolume;
-        public float Sensetivity; //blocker movement sens
+        public float Sensitivity; //blocker movement sens
+        public int AlarmToggle;
+        public int VibrationIndex;
         public int CurrentLevel; //holds current level ref
         public int LoggedInStatus; //0 not logged in, 1 logged in        
         public string LastPlayed; //Last time player played, used to give more hints
@@ -57,7 +53,7 @@ public class SaveManager : MonoBehaviour
         }
 
         tempSave.SaveVersion = currentSaveVersion;
-        gameController.GetSoundController.GetSaveInfo(out float s, out float m);
+        ReferencesController.GetSettingsController.GetSaveInfo(out float s, out float m, out float sens, out int a, out int v);
 
         if (string.IsNullOrEmpty(diffID)) //limited save
         {
@@ -68,7 +64,10 @@ public class SaveManager : MonoBehaviour
 
             tempSave.SFXVolume = s;
             tempSave.MusicVolume = m;
-            tempSave.Sensetivity = gameController.GetBlockerController.Sensetivity;
+            tempSave.Sensitivity = sens;
+            tempSave.AlarmToggle = a;
+            tempSave.VibrationIndex = v;
+
             SaveSystem.SaveData(tempSave);
             return;
         }
@@ -109,7 +108,7 @@ public class SaveManager : MonoBehaviour
   
     public void GetSaveInfo()
     {
-        googlePlayController.InitGooglePlay();
+        ReferencesController.GetGooglePlayController.InitGooglePlay();
 
         if (SaveSystem.FileExist())
         {            
@@ -118,27 +117,25 @@ public class SaveManager : MonoBehaviour
             if (MainSaveInfo.SaveVersion != currentSaveVersion)
             {         
                 string s = "New save system, deleting old save, Sorry\n";
-                uiController.GetLoadingScreenController.UpdateText(s);
+                ReferencesController.GetLoadingScreenController.UpdateText(s);
                 SaveSystem.DeleteSaveFiles();
-                gameController.ReloadGame();
+                ReferencesController.GetGameController.ReloadGame();
                 return;
             }
-            gameController.GetSoundController.SetSaveInfo(mainSaveInfo.SFXVolume, mainSaveInfo.MusicVolume);
-            gameController.GetBlockerController.SetSaveInfo(mainSaveInfo.Sensetivity);
+            ReferencesController.GetSettingsController.SetSaveInfo(mainSaveInfo.SFXVolume, mainSaveInfo.MusicVolume, mainSaveInfo.Sensitivity, mainSaveInfo.AlarmToggle, mainSaveInfo.VibrationIndex);            
 
             if (mainSaveInfo.LoggedInStatus == 1) //auto log in
-            {                
-                googlePlayController.LogIn();
+            {
+                ReferencesController.GetGooglePlayController.LogIn();
             }          
         }
         else
         {            
             DebugSystem.UpdateDebugText("No save file, using default values", false, doDebug);
 #if UNITY_ANDROID
-            googlePlayController.FirstLogin();
+            ReferencesController.GetGooglePlayController.FirstLogin();
 #endif
-            gameController.GetSoundController.SetSaveInfo(0.25f, 0.25f);
-            gameController.GetBlockerController.SetSaveInfo(1f);
+            ReferencesController.GetSettingsController.SetSaveInfo(0.25f, 0.25f, 1, 1, 0);            
             AddToSave("", 0, 0); //Make new save file with default values
         }        
         Invoke("LoadingScreenOff", 0.5f);
@@ -146,8 +143,8 @@ public class SaveManager : MonoBehaviour
 
     private void LoadingScreenOff()
     {
-        uiController.ToggleLoadingScreen(false);
-        gameController.GetSoundController.PlayMusic();
+        ReferencesController.GetUIController.ToggleLoadingScreen(false);
+        ReferencesController.GetSoundController.PlayMusic();
     }
 
     public int GetScoreByID(string id)

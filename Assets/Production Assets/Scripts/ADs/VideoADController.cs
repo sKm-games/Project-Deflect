@@ -10,9 +10,6 @@ using DG.Tweening;
 public class VideoADController : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsShowListener
 {
     //https://docs.unity.com/ads/ImplementingRewardedAdsUnity.html
-    [SerializeField] private UIController uiController;
-    [SerializeField] private GameController gameController;
-    [SerializeField] private SaveManager saveMananger;
     [SerializeField] private Button gameOverVideoButton;
 
     private BannerADController bannerAD;
@@ -188,7 +185,7 @@ public class VideoADController : MonoBehaviour, IUnityAdsLoadListener, IUnityAds
 
     IEnumerator IEType00VideoADDone()
     {
-        gameController.VideoContinue();
+        ReferencesController.GetGameController.VideoContinue();
         yield return new WaitForSeconds(0.5f); //delay to allow video ad UI to close befor effect run, looks better
     }
 

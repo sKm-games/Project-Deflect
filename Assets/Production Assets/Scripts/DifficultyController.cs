@@ -5,9 +5,6 @@ using UnityEngine.UI;
 
 public class DifficultyController : MonoBehaviour
 {
-    [SerializeField] private GameController gameController;
-    [SerializeField] private UIController uiController;
-    [SerializeField] private SoundController soundController;
     [SerializeField] private List<DifficultyDataClass> difficulties;
     [SerializeField] private DifficultyDataClass currentDifficulty;
     public DifficultyDataClass GetCurrentDifficulty
@@ -37,5 +34,11 @@ public class DifficultyController : MonoBehaviour
     {
         Debug.Log($"GetDifficultyLeaderboardRef using index: {i}");
         return difficulties[i].LeaderboardID;
+    }
+
+    public void GetGameOverInfo(out string diffID, out string leaderID)
+    {
+        diffID = currentDifficulty.ID;
+        leaderID = currentDifficulty.LeaderboardID;
     }
 }

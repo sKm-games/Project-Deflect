@@ -7,37 +7,13 @@ using DG.Tweening;
 
 public class SoundController : MonoBehaviour
 {
-    [SerializeField] private SaveManager saveManager;
     [SerializeField] private List<SoundDataClass> soundEffects;
-    private bool sfxStatus;
-    public int GetSFXStatus
-    {
-        get
-        {
-            return sfxStatus ? 1 : 0;
-        }
-    }
     [SerializeField] private List<AudioSource> sfxAudiosources;
 
-    [SerializeField] private Slider sfxSliderPause;
-    private TextMeshProUGUI sfxSliderPauseText;
-    [SerializeField] private Slider sfxSliderSettings;
-    private TextMeshProUGUI sfxSliderSettingsText;
-    [SerializeField] private Slider musicSliderPause;
-    private TextMeshProUGUI musicSliderTextPause;
-    [SerializeField] private Slider musicSliderSettings;
-    private TextMeshProUGUI musicSliderTextSettings;
+    private float sfxVolume;
+    private float musicVolume;
 
-    private bool musicStatus;
-    public int GetMusicStatus
-    {
-        get
-        {
-            return musicStatus ? 1 : 0;
-        }
-    }
     private AudioSource musicAudiosource;
-
     [SerializeField] private float fadeSpeed;
     [SerializeField] private bool doDebug;
 
@@ -46,10 +22,7 @@ public class SoundController : MonoBehaviour
         musicAudiosource = this.GetComponents<AudioSource>()[0];
         sfxAudiosources = new List<AudioSource>(this.GetComponentsInChildren<AudioSource>());
         sfxAudiosources.RemoveAt(0); //remove music
-        sfxSliderPauseText = sfxSliderPause.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
-        sfxSliderSettingsText = sfxSliderSettings.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
-        musicSliderTextPause = musicSliderPause.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
-        musicSliderTextSettings = musicSliderSettings.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+
     }
 
     public void PlaySFX(string id)
@@ -70,7 +43,7 @@ public class SoundController : MonoBehaviour
         float p = Random.Range(s.pitchRange.x, s.pitchRange.y);
         AudioSource a = GetSFXSource();
 
-        a.volume = sfxSliderPause.value > s.maxVolume ? s.maxVolume : sfxSliderPause.value;
+        a.volume = sfxVolume > s.maxVolume ? s.maxVolume : sfxVolume;
         a.loop = s.loop;
         a.pitch = p;
         a.clip = s.Clip;
@@ -105,65 +78,36 @@ public class SoundController : MonoBehaviour
         //float v = musicStatus ? musicMax : 0;
 
         //musicAudiosource.DOFade(v, 0.5f);
-        musicAudiosource.DOFade(musicSliderPause.value, 0.5f);
+        musicAudiosource.DOFade(musicVolume, 0.5f);
     }    
-
-    
-    public void SFXSlider(Slider s)
+        
+    public void UpdateSFX(float v)
     {
-        s.value = (float)decimal.Round((decimal)s.value, 2);
+        v = (float)decimal.Round((decimal)v, 2);
 
         foreach (AudioSource a in sfxAudiosources)
         {
-            a.volume = s.value;
+            a.volume = v;
         }
-
-        sfxSliderPause.SetValueWithoutNotify(s.value);
-        sfxSliderPauseText.text = $"SFX: {s.value*100}%";       
-
-        sfxSliderSettings.SetValueWithoutNotify(s.value);
-        sfxSliderSettingsText.text = $"SFX: {s.value*100}%";
 
         if (!sfxAudiosources[0].isPlaying)
         {
             PlaySFX(soundEffects[0].ID);
-        }        
+        }
+
+        sfxVolume = v;
     }
 
-    public void MusicSlider(Slider s)
+    public void UpdateMusic(float v)
     {
-        s.value = (float)decimal.Round((decimal)s.value, 2);
+        v = (float)decimal.Round((decimal)v, 2);
 
-        musicAudiosource.volume = s.value;
+        musicAudiosource.volume = v;
 
-        musicSliderPause.SetValueWithoutNotify(s.value);
-        musicSliderTextPause.text = $"Music: {s.value * 100}%";
-        musicSliderSettings.SetValueWithoutNotify(s.value);
-        musicSliderTextSettings.text = $"Muisc: {s.value * 100}%";
+        musicVolume = v;
     }
 
     //public void SetSaveInfo(int s, int m)
-    public void SetSaveInfo(float s, float m)
-    {
-        DebugSystem.UpdateDebugText("Set Sound Save Info", false, doDebug);
-       
-        sfxSliderPause.SetValueWithoutNotify(s);
-        sfxSliderPauseText.text = $"SFX: {s * 100}%";
-
-        sfxSliderSettings.SetValueWithoutNotify(s);
-        sfxSliderSettingsText.text = $"SFX: {s * 100}%";
-
-        musicSliderPause.SetValueWithoutNotify(m);
-        musicSliderTextPause.text = $"Music: {m * 100}%";
-        musicSliderSettings.SetValueWithoutNotify(m);
-        musicSliderTextSettings.text = $"Muisc: {m * 100}%";
-    }
-
-    public void GetSaveInfo(out float s, out float m)
-    {
-        s = sfxSliderPause.value;
-        m = musicSliderPause.value;
-    }
 
     private AudioSource GetSFXSource()
     {

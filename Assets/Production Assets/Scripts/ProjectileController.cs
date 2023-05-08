@@ -4,10 +4,6 @@ using UnityEngine;
 
 public class ProjectileController : MonoBehaviour
 {
-    [SerializeField] private GameController gameController;    
-    private DifficultyController difficultyController;
-    private LevelController levelController;
-
     [SerializeField] private int activeProjectiles;
     [SerializeField] private float aimOffset;
     [SerializeField] private Transform projectileHolder;
@@ -17,11 +13,9 @@ public class ProjectileController : MonoBehaviour
     [SerializeField] private Transform ExplosionHolder;
     [SerializeField] private List<EffectObject> explosionsList;
     [SerializeField] bool allowNewExplosion;
+
     void Start()
     {
-        difficultyController = this.GetComponent<DifficultyController>();
-        levelController = this.GetComponent<LevelController>();        
-
         projectilesList = new List<ProjectileObject>(projectileHolder.GetComponentsInChildren<ProjectileObject>());
 
         foreach (ProjectileObject rb in projectilesList)
@@ -59,7 +53,7 @@ public class ProjectileController : MonoBehaviour
         //get target pos
         Vector3 targetPos = FindAimOffsett(sp);
 
-        DifficultyDataClass data = difficultyController.GetCurrentDifficulty;
+        DifficultyDataClass data = ReferencesController.GetDifficultyController.GetCurrentDifficulty;
 
         sp.SetAimInfo(data.AimLaserSize, data.AimLaserColor, targetPos);
 
@@ -76,13 +70,14 @@ public class ProjectileController : MonoBehaviour
         }
 
         sp.SetShootInfo(data.ShotLaserSize, data.ShotLaserColor);
-        
-        gameController.GetSoundController.PlaySFX("shoot");
+
+        ReferencesController.GetSoundController.PlaySFX("shoot");
         
         yield return new WaitForSeconds(data.ShotTime);
 
         sp.UpdateLaserAlpha(0);
 
+        ReferencesController.GetSettingsController.CheckVibration(VibrationTriggerEnums.Shot);
         ProjectileObject p = GetProjectile();
         p.Launch(sp.transform, data.ProjectileSpeed);
 
@@ -94,7 +89,7 @@ public class ProjectileController : MonoBehaviour
     private Vector3 FindAimOffsett(SpawnpointObject sp)
     {
         //calc aim offesets        
-        Transform target = levelController.GetTarget();
+        Transform target = ReferencesController.GetLevelController.GetTarget();
 
         float minOffset = sp.transform.position.x <= -3 ? 0 : -aimOffset;
         float maxOffset = sp.transform.position.x >= 3 ? 0 : aimOffset;
@@ -168,7 +163,8 @@ public class ProjectileController : MonoBehaviour
         activeProjectiles--;
         if (activeProjectiles <= 0)
         {
-            levelController.Invoke("LevelOver", difficultyController.GetCurrentDifficulty.NextLevelDelay);
+            float d = ReferencesController.GetDifficultyController.GetCurrentDifficulty.NextLevelDelay;
+            ReferencesController.GetLevelController.Invoke("LevelOver", d);
         }
     }
 

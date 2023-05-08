@@ -3,20 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class ProjectileObject : MonoBehaviour
-{
-    [SerializeField] private GameController gameController;      
+{     
     [SerializeField] private int lifeTime;
     
     [SerializeField] private ParticleSystem explosion;
     
-    private CameraController cameraController;
     private Rigidbody2D rb;
     private CircleCollider2D circleCol;
     private bool removeOnce;    
 
     private void Awake()
-    {
-        cameraController = Camera.main.transform.GetComponent<CameraController>();                 
+    {           
         rb = this.GetComponent<Rigidbody2D>();
         circleCol = this.GetComponent<CircleCollider2D>();
     }
@@ -35,21 +32,27 @@ public class ProjectileObject : MonoBehaviour
     {
         if (col.transform.tag == "Player")
         {
-            gameController.GetScoreController.UpdateScore(false);
+            ReferencesController.GetScoreController.UpdateScore(false);
             TargetObject b = col.transform.GetComponent<TargetObject>();
-            b.TakeDamage();
+            b.TakeDamage();            
             Explosion();
-            RemoveProjectile();            
+            RemoveProjectile();
+
+            ReferencesController.GetSettingsController.CheckVibration(VibrationTriggerEnums.Hit);
         }
         else if (col.transform.tag == "Blocker")
         {
-            gameController.GetScoreController.UpdateScore(true);
-            gameController.GetSoundController.PlaySFX("deflect");         
+            ReferencesController.GetScoreController.UpdateScore(true);
+            ReferencesController.GetSoundController.PlaySFX("deflect");
+
+            ReferencesController.GetSettingsController.CheckVibration(VibrationTriggerEnums.Hit);
         }
         else if (col.transform.tag == "Finish")
         {
             RemoveProjectile();
             Explosion();
+
+            ReferencesController.GetSettingsController.CheckVibration(VibrationTriggerEnums.Hit);
         }
         else if (col.transform.tag == "Walls")
         {
@@ -63,7 +66,7 @@ public class ProjectileObject : MonoBehaviour
         if (!this.gameObject.activeSelf && removeOnce)
         {
             circleCol.enabled = false;
-            gameController.GetProjectilesController.UpdateActiveProjectiles();
+            ReferencesController.GetProjectileController.UpdateActiveProjectiles();
             this.transform.position = new Vector3(-50, 0, 0);
             removeOnce = false;
         }
@@ -71,11 +74,11 @@ public class ProjectileObject : MonoBehaviour
 
     private void Explosion()
     {
-        cameraController.StartShake();
-        EffectObject e = gameController.GetProjectilesController.GetEffectObject();
+        ReferencesController.GetCameraController.StartShake();
+        EffectObject e = ReferencesController.GetProjectileController.GetEffectObject();
         e.transform.position = this.transform.position;
         e.gameObject.SetActive(true);
-        e.DoEffect(gameController.GetSoundController);
+        e.DoEffect();
     }
 
     IEnumerator IELifeTime()

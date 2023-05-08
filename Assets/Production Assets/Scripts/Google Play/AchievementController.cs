@@ -7,9 +7,6 @@ using GooglePlayGames;
 
 public class AchievementController : MonoBehaviour
 {    
-    [SerializeField] private SoundController soundController;
-    [SerializeField] private SaveManager saveManager;
-
     [SerializeField] private List<AchievementsDataClass> achievementsDataList;
  
     [SerializeField] private Button achievButton;
@@ -33,8 +30,7 @@ public class AchievementController : MonoBehaviour
 
     public void ShowAchievScreen()
     {
-#if UNITY_ANDROID
-        soundController.PlaySFX("Button");
+#if UNITY_ANDROID        
         if (!PlayGamesPlatform.Instance.IsAuthenticated()) //not logged in skip
         {
             DebugSystem.UpdateDebugText("Google Play not looged in");

@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class ScoreController : MonoBehaviour
 {
-    [SerializeField] private AchievementController achivController;
-    [SerializeField] private UIController uiController;
     [SerializeField] private int scoreReward;
     [SerializeField] private int scorePenalty;
     [SerializeField] private int totalScore;
@@ -31,10 +29,10 @@ public class ScoreController : MonoBehaviour
     {
         totalScore += deflected ? scoreReward : scorePenalty;
         deflections += deflected ? 1 : 0;
-        uiController.UpdateScoreText(totalScore);
+        ReferencesController.GetUIController.UpdateScoreText(totalScore);
         if (deflected)
         {
-            achivController.CheckDeflectedAchievements();
+            ReferencesController.GetAchievementController.CheckDeflectedAchievements();
         }
     }
 
@@ -42,5 +40,11 @@ public class ScoreController : MonoBehaviour
     {
         totalScore = 0;
         deflections = 0;
+    }
+
+    public void GetGameOverInfo(out int t, out int d)
+    {
+        t = totalScore;
+        d = deflections;        
     }
 }
