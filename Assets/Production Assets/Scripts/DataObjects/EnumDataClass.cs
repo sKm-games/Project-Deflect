@@ -14,3 +14,9 @@ public enum VibrationTriggerEnums
     Hit, Shot
 }
 
+[System.Serializable]
+public enum ModeEnums
+{
+    Easy, Medium, Hard, Impossible, Endless
+}
+

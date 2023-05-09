@@ -81,7 +81,7 @@ public class UIController : MonoBehaviour
     {
         foreach (Button b in mainMenuUI.ModeLeaderboardButtons)
         {
-            b.interactable = GooglePlayController.CheckLogin() == 1 ? true : false;
+            b.interactable = GooglePlayController.CheckLogin();
         }
     }
 
@@ -109,7 +109,19 @@ public class UIController : MonoBehaviour
         ReferencesController.GetSoundController.PlaySFX("button");
     }
 
-    public void GameToStartScreen()
+    public void PauseToStartScreen()
+    {
+        ReferencesController.GetLevelController.ResetTargets();
+        ReferencesController.GetLevelController.StopProgress();
+        ReferencesController.GetBlockerController.ToggleBlocker(false);
+        ReferencesController.GetGameController.GameIsRunning = false;
+
+        ReferencesController.GetEventsController.ModeQuitEvent();
+
+        DefaultLayout();
+    }
+
+    public void GameOverToStartScreen()
     {
         ReferencesController.GetLevelController.ResetTargets();
         ReferencesController.GetLevelController.StopProgress();
@@ -131,10 +143,12 @@ public class UIController : MonoBehaviour
         gameplayUI.ScoreText.text = $"Score: {s}";
     }
 
-    public void UpdateLevelText(int l, bool e)
+    public void UpdateLevelText(int l)
     {
         ReferencesController.GetLevelController.GetLevelInfo(out int totalLevels, out string difficulty);
-        string s = e ? $"{difficulty}: {(l + 1).ToString("00")}" : $"{difficulty}: {(l + 1).ToString("00")}/{totalLevels}";        
+        bool endless = ReferencesController.GetDifficultyController.GetCurrentDifficulty.Mode == ModeEnums.Endless;
+
+        string s = endless ? $"{difficulty}: {(l + 1).ToString("00")}" : $"{difficulty}: {(l + 1).ToString("00")}/{totalLevels}";        
         gameplayUI.LevelText.text = s;
     }
 
@@ -142,25 +156,33 @@ public class UIController : MonoBehaviour
     {
         if (b)
         {
-            ReferencesController.GetScoreController.GetGameOverInfo(out int score, out int deflects);
-            ReferencesController.GetDifficultyController.GetGameOverInfo(out string diffID, out string leaderID);
+            ReferencesController.GetScoreController.GetGameOverInfo(out int score, out int deflects, out bool newHighScore);
+            ReferencesController.GetDifficultyController.GetGameOverInfo(out string diffID, out string leaderID);   
             
-            bool newHighscore = ReferencesController.GetLeaderboardController.CheckNewAllTimeHighscore(score, leaderID);
-            ReferencesController.GetLeaderboardController.PostScoreToLeaderboard(score, leaderID);
+            ReferencesController.GetLeaderboardController.PostScoreToLeaderboard(score, leaderID);            
             
             ReferencesController.GetSaveManager.AddToSave(diffID, score, deflects);
 
             gameOverUI.TitleText.text = w ? "Winner!" : "Game Over!";
             string colorString = ColorUtility.ToHtmlStringRGBA(gameOverUI.HighScoreTextColor);
             Debug.Log($"colorString {colorString}");
-            gameOverUI.ScoreText.text = newHighscore ? $"<b><color=#{colorString}>New \nHigh Score</b></color>\nScore: \n{score}" : $"\n\nScore: \n{score}";
+            gameOverUI.ScoreText.text = newHighScore ? $"<b><color=#{colorString}>New \nHigh Score</b></color>\nScore: \n{score}" : $"\n\nScore: \n{score}";
 
             ReferencesController.GetVideoADController.LoadVideoAD();
             ReferencesController.GetVideoADController.ToggleAdButton(0, !w);
-            gameOverUI.LeaderboardButton.interactable = GooglePlayController.CheckLogin() == 1 ;
-            
-
+            gameOverUI.LeaderboardButton.interactable = GooglePlayController.CheckLogin();
+                        
+            if (w)
+            {
+                ReferencesController.GetEventsController.ModeCompletedEvent();
+                ReferencesController.GetAchievementController.CheckModeDoneAchievements();
+            }
+            else
+            {
+                ReferencesController.GetEventsController.ModeGameOverEvent();
+            }
         }
+
         gameOverUI.GameOverScreen.SetActive(b);
         gameplayUI.PauseScreen.SetActive(false);        
     }

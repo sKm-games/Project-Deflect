@@ -21,6 +21,8 @@ public class GameController : MonoBehaviour
 
     [SerializeField] private int lifes;
     private int activeLifes;
+    private int adRetries;
+
 
     private void Awake()
     {
@@ -39,17 +41,21 @@ public class GameController : MonoBehaviour
         if (!gameIsRunning)
         {
             Debug.Log("Start Game");
+            adRetries = 0;
             ReferencesController.GetScoreController.ResetScore();
             ReferencesController.GetDifficultyController.SetDifficutly(d);
             ReferencesController.GetLevelController.SetupLevel(true);
+            ReferencesController.GetLeaderboardController.LoadLeaderboardInfo();
             gameIsRunning = true;
                         
             ReferencesController.GetBlockerController.Init(ReferencesController.GetDifficultyController.GetCurrentDifficulty);                        
-            ReferencesController.GetUIController.UpdateLevelText(0, ReferencesController.GetDifficultyController.GetCurrentDifficulty.endLess);
+            ReferencesController.GetUIController.UpdateLevelText(0);
 
             ReferencesController.GetUIController.UpdateScoreText(0);
             ReferencesController.GetBlockerController.ToggleBlocker(true);
             Time.timeScale = 1;
+
+            ReferencesController.GetEventsController.ModeStartedEvent();
         }
     }
 
@@ -58,7 +64,10 @@ public class GameController : MonoBehaviour
         ReferencesController.GetLevelController.SetupLevel(false);
         ReferencesController.GetUIController.ToggleGameOverScreen(false, false);
         ReferencesController.GetBlockerController.ToggleBlocker(true);
+        ReferencesController.GetEventsController.RebuildEvent();
+        adRetries++;
         gameIsRunning = true;
+        
     }
 
     public void RetryDifficulty()
@@ -92,7 +101,15 @@ public class GameController : MonoBehaviour
     {        
         gameIsRunning = false;
         ReferencesController.GetBlockerController.ToggleBlocker(false);
-        ReferencesController.GetUIController.ToggleGameOverScreen(true, w);                
+        ReferencesController.GetUIController.ToggleGameOverScreen(true, w);
+        ReferencesController.GetAchievementController.CheckOtherAchievements("NeverGiveUp!", adRetries);
+        
+        if (adRetries == 0)
+        {
+            ReferencesController.GetAchievementController.CheckOtherAchievements("PerfectVictory", activeLifes);
+            ReferencesController.GetAchievementController.CheckOtherAchievements("PyrrhicVictory", activeLifes);
+        }
+        
     }
 
     public void ReloadGame()

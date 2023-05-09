@@ -197,7 +197,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af10d2814d2ef26459c039fe17727226, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameController: {fileID: 0}
   lifeTime: 10
   explosion: {fileID: 3209873479922826428, guid: 29710561672d33942b85a04fd057a6e3,
     type: 3}
@@ -271,9 +270,9 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 1890529295
-  m_SortingLayer: 1
-  m_SortingOrder: 0
+  m_SortingLayerID: 1135456837
+  m_SortingLayer: 2
+  m_SortingOrder: 2
   m_Sprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
   m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_FlipX: 0
@@ -356,9 +355,9 @@ TrailRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 1890529295
-  m_SortingLayer: 1
-  m_SortingOrder: 0
+  m_SortingLayerID: 1135456837
+  m_SortingLayer: 2
+  m_SortingOrder: 1
   m_Time: 0.2
   m_Parameters:
     serializedVersion: 3

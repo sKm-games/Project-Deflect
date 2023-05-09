@@ -127,16 +127,16 @@ public class GooglePlayController : MonoBehaviour
 #endif
     }
 
-    public static int CheckLogin()
+    public static bool CheckLogin()
     {
 #if UNITY_ANDROID
         if(Social.localUser.authenticated)
         {
             DebugSystem.UpdateDebugText("Google Play LogIn, is logged in", false, staticDoDebug);
-            return 1;
+            return true;
         }
         DebugSystem.UpdateDebugText("Google Play LogIn, is not logged in", false, staticDoDebug);
 #endif
-        return 0;
+        return false;
     }
 }

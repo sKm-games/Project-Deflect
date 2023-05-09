@@ -85,7 +85,7 @@ public class LevelController : MonoBehaviour
 
     public void StartLevel()
     {
-        bool endless = ReferencesController.GetDifficultyController.GetCurrentDifficulty.endLess;
+        bool endless = ReferencesController.GetDifficultyController.GetCurrentDifficulty.Mode == ModeEnums.Endless;
         if (levelRef >= levelList.Count)
         {
             if (endless) //reset level count and shuffle list for endless
@@ -100,7 +100,7 @@ public class LevelController : MonoBehaviour
             }            
         }
 
-        ReferencesController.GetUIController.UpdateLevelText(levelCount, endless);
+        ReferencesController.GetUIController.UpdateLevelText(levelCount);
 
         int amount = levelList[levelRef];
         StartCoroutine(IEProgressLevel(amount));
@@ -135,9 +135,9 @@ public class LevelController : MonoBehaviour
         {
             levelRef++;
             levelCount++;
-            StartLevel();
-            string diffName = ReferencesController.GetDifficultyController.GetCurrentDifficulty.Name;
-            ReferencesController.GetAchievementController.CheckLevelAchievements(diffName, levelCount);
+            StartLevel();            
+            ReferencesController.GetAchievementController.CheckLevelAchievements(levelCount);
+            ReferencesController.GetEventsController.CheckEndlessLevelEvent(levelCount);            
         }
     }
 

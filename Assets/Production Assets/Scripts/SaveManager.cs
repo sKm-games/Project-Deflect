@@ -60,7 +60,7 @@ public class SaveManager : MonoBehaviour
             DebugSystem.UpdateDebugText("SaveManger: LimitedSave", false, doDebug);          
             tempSave.LastPlayed = DateTime.Today.ToShortDateString();
 
-            tempSave.LoggedInStatus = GooglePlayController.CheckLogin();            
+            tempSave.LoggedInStatus = GooglePlayController.CheckLogin() ? 1 : 0;
 
             tempSave.SFXVolume = s;
             tempSave.MusicVolume = m;
@@ -100,7 +100,7 @@ public class SaveManager : MonoBehaviour
 
         tempSave.LastPlayed = DateTime.Today.ToShortDateString();
 
-        tempSave.LoggedInStatus = GooglePlayController.CheckLogin();
+        tempSave.LoggedInStatus = GooglePlayController.CheckLogin() ? 1 : 0;
         SaveSystem.SaveData(tempSave);
         
         DebugSystem.UpdateDebugText("Saving Done", false, doDebug);        

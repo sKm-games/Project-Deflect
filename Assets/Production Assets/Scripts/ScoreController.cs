@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SocialPlatforms;
 
 public class ScoreController : MonoBehaviour
 {
@@ -24,7 +25,6 @@ public class ScoreController : MonoBehaviour
         }
     }
 
-
     public void UpdateScore(bool deflected)
     {
         totalScore += deflected ? scoreReward : scorePenalty;
@@ -33,7 +33,10 @@ public class ScoreController : MonoBehaviour
         if (deflected)
         {
             ReferencesController.GetAchievementController.CheckDeflectedAchievements();
+            ReferencesController.GetEventsController.DeflectionEvent(1);
         }
+
+        DebugScreenshots.TakeDebugScreenShoot();
     }
 
     public void ResetScore()
@@ -42,9 +45,13 @@ public class ScoreController : MonoBehaviour
         deflections = 0;
     }
 
-    public void GetGameOverInfo(out int t, out int d)
+    public void GetGameOverInfo(out int t, out int d, out bool nhs)
     {
         t = totalScore;
-        d = deflections;        
+        
+        d = deflections;
+
+        ReferencesController.GetLeaderboardController.GetLeaderboardInfo(TimeScope.AllTime, out int s, out int r);
+        nhs = totalScore > s;
     }
 }

@@ -24,12 +24,56 @@
 
 public static class GPGSIds
 {
-        public const string leaderboard_easy = "CgkIgMb1hfoVEAIQAg"; // <GPGSID>
-        public const string leaderboard_impossible = "CgkIgMb1hfoVEAIQBQ"; // <GPGSID>
-        public const string leaderboard_medium = "CgkIgMb1hfoVEAIQAw"; // <GPGSID>
-        public const string leaderboard_endless = "CgkIgMb1hfoVEAIQBg"; // <GPGSID>
-        public const string achievement_test_deflect = "CgkIgMb1hfoVEAIQAQ"; // <GPGSID>
+        public const string event_endless_level_100 = "CgkIgMb1hfoVEAIQHg"; // <GPGSID>
         public const string leaderboard_hard = "CgkIgMb1hfoVEAIQBA"; // <GPGSID>
+        public const string event_targets_hit = "CgkIgMb1hfoVEAIQIA"; // <GPGSID>
+        public const string leaderboard_medium = "CgkIgMb1hfoVEAIQAw"; // <GPGSID>
+        public const string achievement_i_survived = "CgkIgMb1hfoVEAIQKA"; // <GPGSID>
+        public const string event_medium_mode_rebuilds = "CgkIgMb1hfoVEAIQEA"; // <GPGSID>
+        public const string leaderboard_easy = "CgkIgMb1hfoVEAIQAg"; // <GPGSID>
+        public const string event_medium_mode_started = "CgkIgMb1hfoVEAIQDw"; // <GPGSID>
+        public const string achievement_deflecting_novice = "CgkIgMb1hfoVEAIQLQ"; // <GPGSID>
+        public const string achievement_deflecting_master = "CgkIgMb1hfoVEAIQLw"; // <GPGSID>
+        public const string achievement_burning_village = "CgkIgMb1hfoVEAIQMA"; // <GPGSID>
+        public const string event_hard_mode_game_over = "CgkIgMb1hfoVEAIQJA"; // <GPGSID>
+        public const string event_hard_mode_quits = "CgkIgMb1hfoVEAIQFQ"; // <GPGSID>
+        public const string event_impossible_mode_rebuilds = "CgkIgMb1hfoVEAIQGA"; // <GPGSID>
+        public const string event_easy_mode_started = "CgkIgMb1hfoVEAIQDQ"; // <GPGSID>
+        public const string event_hard_mode_completed = "CgkIgMb1hfoVEAIQEw"; // <GPGSID>
+        public const string event_impossible_mode_completed = "CgkIgMb1hfoVEAIQFw"; // <GPGSID>
+        public const string event_medium_mode_completed = "CgkIgMb1hfoVEAIQDg"; // <GPGSID>
+        public const string leaderboard_endless = "CgkIgMb1hfoVEAIQBg"; // <GPGSID>
+        public const string event_endless_level_80 = "CgkIgMb1hfoVEAIQHQ"; // <GPGSID>
+        public const string leaderboard_impossible = "CgkIgMb1hfoVEAIQBQ"; // <GPGSID>
+        public const string event_easy_mode_quits = "CgkIgMb1hfoVEAIQDA"; // <GPGSID>
+        public const string achievement_king_of_the_week = "CgkIgMb1hfoVEAIQNA"; // <GPGSID>
+        public const string event_projectiles_launched = "CgkIgMb1hfoVEAIQIQ"; // <GPGSID>
+        public const string event_endless_level_60 = "CgkIgMb1hfoVEAIQHA"; // <GPGSID>
+        public const string event_deflections = "CgkIgMb1hfoVEAIQHw"; // <GPGSID>
+        public const string event_endless_level_40 = "CgkIgMb1hfoVEAIQGw"; // <GPGSID>
+        public const string event_endless_level_20 = "CgkIgMb1hfoVEAIQGg"; // <GPGSID>
+        public const string achievement_burning_town = "CgkIgMb1hfoVEAIQMQ"; // <GPGSID>
+        public const string achievement_deflecting_apprentice = "CgkIgMb1hfoVEAIQLg"; // <GPGSID>
+        public const string achievement_never_give_up = "CgkIgMb1hfoVEAIQMw"; // <GPGSID>
+        public const string event_hard_mode_started = "CgkIgMb1hfoVEAIQEg"; // <GPGSID>
+        public const string event_impossible_mode_game_over = "CgkIgMb1hfoVEAIQJQ"; // <GPGSID>
+        public const string achievement_it_keeps_going = "CgkIgMb1hfoVEAIQKg"; // <GPGSID>
+        public const string event_medium_mode_game_over = "CgkIgMb1hfoVEAIQIw"; // <GPGSID>
+        public const string event_impossible_mode_started = "CgkIgMb1hfoVEAIQFg"; // <GPGSID>
+        public const string event_easy_mode_completed = "CgkIgMb1hfoVEAIQCg"; // <GPGSID>
+        public const string event_easy_mode_game_over = "CgkIgMb1hfoVEAIQIg"; // <GPGSID>
+        public const string achievement_pyrrhic_victory = "CgkIgMb1hfoVEAIQLA"; // <GPGSID>
+        public const string achievement_keepem_coming = "CgkIgMb1hfoVEAIQJw"; // <GPGSID>
+        public const string event_hard_mode_rebuilds = "CgkIgMb1hfoVEAIQFA"; // <GPGSID>
+        public const string event_impossible_mode_quits = "CgkIgMb1hfoVEAIQGQ"; // <GPGSID>
+        public const string achievement_so_fare_so_good = "CgkIgMb1hfoVEAIQNg"; // <GPGSID>
+        public const string achievement_friendly_fire = "CgkIgMb1hfoVEAIQNQ"; // <GPGSID>
+        public const string achievement_burning_city = "CgkIgMb1hfoVEAIQMg"; // <GPGSID>
+        public const string achievement_perfect_victory = "CgkIgMb1hfoVEAIQKw"; // <GPGSID>
+        public const string event_medium_mode_quits = "CgkIgMb1hfoVEAIQEQ"; // <GPGSID>
+        public const string achievement_to_easy = "CgkIgMb1hfoVEAIQJg"; // <GPGSID>
+        public const string achievement_is_it_possible = "CgkIgMb1hfoVEAIQKQ"; // <GPGSID>
+        public const string event_easy_mode_rebuilds = "CgkIgMb1hfoVEAIQCw"; // <GPGSID>
 
 }
 

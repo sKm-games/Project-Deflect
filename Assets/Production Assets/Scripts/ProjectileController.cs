@@ -81,7 +81,7 @@ public class ProjectileController : MonoBehaviour
         ProjectileObject p = GetProjectile();
         p.Launch(sp.transform, data.ProjectileSpeed);
 
-        //gameController.GetSoundController.PlaySFX("shoot");
+        ReferencesController.GetEventsController.ProjectilesLaunchedEvent(1);
 
         sp.IsReady = true;
     }

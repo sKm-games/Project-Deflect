@@ -9,4 +9,6 @@ public class AchievementsDataClass : ScriptableObject
     public string AchievementID; //id from Google Play Console
     public int IncrementValue; //How much the achievement should increase per event
     public bool Instant;  //If the achievement is instant
+    public int Target; //Used for certain achievements to trigger when target is reached
+    public ModeEnums Mode; ////Used for certain achievements to trigger on specific modes
 }

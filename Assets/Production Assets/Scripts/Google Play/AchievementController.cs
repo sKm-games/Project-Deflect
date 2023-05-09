@@ -6,9 +6,26 @@ using GooglePlayGames;
 
 
 public class AchievementController : MonoBehaviour
-{    
-    [SerializeField] private List<AchievementsDataClass> achievementsDataList;
- 
+{
+    [SerializeField]
+    private AchievementsDataClass easyModeDone;
+    [SerializeField]
+    private AchievementsDataClass mediumModeDone;
+    [SerializeField]
+    private AchievementsDataClass hardModeDone;
+    [SerializeField]
+    private AchievementsDataClass impossibleModeDone;
+    [SerializeField]
+    private List<AchievementsDataClass> modeLevelsDataList;
+    [SerializeField]
+    private List<AchievementsDataClass> deflectionsDataList;
+    [SerializeField]
+    private List<AchievementsDataClass> targetsDataList;
+
+    [SerializeField]
+    private List<AchievementsDataClass> othersDataList;
+
+
     [SerializeField] private Button achievButton;
     public Button AchievButton
     {
@@ -31,7 +48,7 @@ public class AchievementController : MonoBehaviour
     public void ShowAchievScreen()
     {
 #if UNITY_ANDROID        
-        if (!PlayGamesPlatform.Instance.IsAuthenticated()) //not logged in skip
+        if (!GooglePlayController.CheckLogin()) //not logged in skip
         {
             DebugSystem.UpdateDebugText("Google Play not looged in");
             return;
@@ -40,59 +57,125 @@ public class AchievementController : MonoBehaviour
 #endif
     }
 
-    public void CheckLevelAchievements(string modeRef, int l)
-    {        
-        if (modeRef == "Endless" && l > 9)
+    public void CheckLevelAchievements(int l)
+    {
+        if (!GooglePlayController.CheckLogin()) //not logged in skip
         {
-            CheckAchievement("TestKeepGoing");
+            DebugSystem.UpdateDebugText($"AchievementController: CheckLevelAchievements: Not logged in", false, doDebug);
+            return;
+        }
+        ModeEnums mode = ReferencesController.GetDifficultyController.GetCurrentDifficulty.Mode;
+
+        foreach (AchievementsDataClass ad in modeLevelsDataList)
+        {
+            if (ad.Target >= l && mode == ad.Mode)
+            {
+                CheckAchievement(ad);
+            }
+        }
+    }
+
+    public void CheckModeDoneAchievements()
+    {
+        if (!GooglePlayController.CheckLogin()) //not logged in skip
+        {
+            DebugSystem.UpdateDebugText($"AchievementController: CheckModeDoneAchievements: Not logged in", false, doDebug);
+            return;
+        }
+        ModeEnums mode = ReferencesController.GetDifficultyController.GetCurrentDifficulty.Mode;
+
+        switch (mode)
+        {
+            case ModeEnums.Easy:
+                CheckAchievement(easyModeDone);
+                break;
+            case ModeEnums.Medium:
+                CheckAchievement(mediumModeDone);
+                break;
+            case ModeEnums.Hard:
+                CheckAchievement(hardModeDone);
+                break;
+            case ModeEnums.Impossible:
+                CheckAchievement(impossibleModeDone);
+                break;
+            case ModeEnums.Endless:
+            default:
+                break;
         }
     }
 
     public void CheckDeflectedAchievements()
     {
-        CheckAchievement("TestDeflect5");
-        CheckAchievement("TestDeflect20");
-    }
-
-    public void CheckHealthAchievements()
-    {
-        CheckAchievement("TestBurning10");
-    }
-
-    public void CheckAchievement(string nameRef)
-    {
-#if UNITY_ANDROID
-        DebugSystem.UpdateDebugText($"AchievementController: CheckAchievement with nameRef {nameRef}", false, doDebug);
-        AchievementsDataClass info = achievementsDataList.Find((x) => x.NameRef == nameRef);
-
-        if (info == null)
-        {
-            DebugSystem.UpdateDebugText($"AchievementController: CheckAchievement: Invalid nameRef {nameRef}", true, doDebug);
-            return;
-        }       
-
-        if (!PlayGamesPlatform.Instance.IsAuthenticated()) //not logged in skip
+        if (!GooglePlayController.CheckLogin()) //not logged in skip
         {
             DebugSystem.UpdateDebugText($"AchievementController: CheckAchievement: Not logged in", false, doDebug);
             return;
         }
-        if (info.Instant)
+        foreach (AchievementsDataClass ad in deflectionsDataList)
         {
-            Social.ReportProgress(info.AchievementID, 100.00, (bool success) => 
+            CheckAchievement(ad);
+        }
+    }
+
+    public void CheckTargetAchievements()
+    {
+        if (!GooglePlayController.CheckLogin()) //not logged in skip
+        {
+            DebugSystem.UpdateDebugText($"AchievementController: CheckAchievement: Not logged in", false, doDebug);
+            return;
+        }
+        foreach (AchievementsDataClass ad in targetsDataList)
+        {
+            CheckAchievement(ad);
+        }
+    }
+
+    public void CheckOtherAchievements(string id, int target = 0)
+    {
+        if (!GooglePlayController.CheckLogin()) //not logged in skip
+        {
+            DebugSystem.UpdateDebugText($"AchievementController: CheckOtherAchievements: Not logged in", false, doDebug);
+            return;
+        }
+
+        foreach (AchievementsDataClass ad in othersDataList)
+        {
+            if (ad.NameRef == id && ad.Target >= target)
+            {
+                CheckAchievement(ad);
+                return;
+            }                
+        }
+    }
+
+    private void CheckAchievement(AchievementsDataClass ad)
+    {
+#if UNITY_ANDROID
+        DebugSystem.UpdateDebugText($"AchievementController: CheckAchievement with nameRef {ad.NameRef}", false, doDebug);
+
+        if (ad == null)
+        {
+            DebugSystem.UpdateDebugText($"AchievementController: CheckAchievement: Invalid nameRef {ad.NameRef}", true, doDebug);
+            return;
+        }
+
+        if (ad.Instant)
+        {
+            Social.ReportProgress(ad.AchievementID, 100.00, (bool success) => 
             {
                 if (!success)
                 {
-                    DebugSystem.UpdateDebugText($"AchievementController: CheckAcievement: Failed to report instant using nameRef {nameRef}, check info");
+                    DebugSystem.UpdateDebugText($"AchievementController: CheckAcievement: Failed to report instant using nameRef {ad.NameRef}, check info");
                 }
             });
         }
         else
         {
-            PlayGamesPlatform.Instance.IncrementAchievement(info.AchievementID, info.IncrementValue, (bool success) =>
+            PlayGamesPlatform.Instance.IncrementAchievement(ad.AchievementID, ad.IncrementValue, (bool success) =>
             {
                 if (!success)
                 {
-                    DebugSystem.UpdateDebugText($"AchievementController: CheckAcievement: Failed to report incremental using nameRef {nameRef}, check info");
+                    DebugSystem.UpdateDebugText($"AchievementController: CheckAcievement: Failed to report incremental using nameRef {ad.NameRef}, check info");
                 }
             });
         }        

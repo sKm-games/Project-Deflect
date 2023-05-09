@@ -10,9 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b8ee39b0305b62843b88a553e4ca11e0, type: 3}
-  m_Name: TestKeepGoing
+  m_Name: 16_KingOfTheWeek
   m_EditorClassIdentifier: 
-  NameRef: TestKeepGoing
-  AchievementID: CgkIgMb1hfoVEAIQCQ
+  NameRef: KingOfTheWeek
+  AchievementID: CgkIgMb1hfoVEAIQNA
   IncrementValue: 1
   Instant: 1
+  Target: 1
+  Mode: 0

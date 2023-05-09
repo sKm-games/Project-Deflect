@@ -22,7 +22,7 @@ public class TargetObject : MonoBehaviour
         }
     }    
     private BoxCollider2D targetCollider;
-    private bool doOnce;
+    private bool doOnce;    
 
     private void Awake()
     {
@@ -100,11 +100,12 @@ public class TargetObject : MonoBehaviour
         targetCollider.enabled = false;
 
         spriteRenderer.flipX = Random.Range(0, 2) == 0;
-
+        
         ReferencesController.GetGameController.UpdateLifes(-1);
         spriteRenderer.sprite = buildingSprites[1];
 
-        ReferencesController.GetAchievementController.CheckHealthAchievements();
+        ReferencesController.GetAchievementController.CheckTargetAchievements();
+        ReferencesController.GetEventsController.TargetsDestroyedEvent(1);
         
     }
 

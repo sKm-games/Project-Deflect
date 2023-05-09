@@ -19,11 +19,26 @@ public class BannerADController : MonoBehaviour
             return isActive;
         }
     }
+
+    private void OnEnable()
+    {
+        CheckPlaceholder();
+    }
+
     public void Init()
     {
-#if UNITY_ANDROID                 
+#if UNITY_ANDROID
         LoadBannerAd();
         StartCoroutine(ShowBannerWhenInitialized());
+#endif
+    }
+
+    private void CheckPlaceholder()
+    {
+#if UNITY_EDITOR
+        placeHolderAD.SetActive(usePlaceholder);
+#else
+        placeHolderAD.SetActive(false);
 #endif
     }
 
@@ -37,19 +52,13 @@ public class BannerADController : MonoBehaviour
         if (active)
         {
             //LoadBannerAd();
-            ShowBannerAd();            
-            placeHolderAD.SetActive(usePlaceholder);
-#if UNITY_EDITOR
-            placeHolderAD.SetActive(usePlaceholder);
-#endif
+            ShowBannerAd();
+            CheckPlaceholder();
         }
         else
         {
             Advertisement.Banner.Hide(true);            
             placeHolderAD.SetActive(false);
-#if UNITY_EDITOR
-            placeHolderAD.SetActive(false);
-#endif
         }
     }
 
@@ -61,11 +70,6 @@ public class BannerADController : MonoBehaviour
             yield return new WaitForSeconds(0.5f);
         }        
         ShowBannerAd();
-#if UNITY_EDITOR
-        placeHolderAD.SetActive(usePlaceholder);
-#else
-        placeHolderAD.SetActive(false);
-#endif
     }
 
     public void LoadBannerAd()

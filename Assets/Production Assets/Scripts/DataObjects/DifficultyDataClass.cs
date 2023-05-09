@@ -8,6 +8,7 @@ public class DifficultyDataClass : ScriptableObject
     public string ID; //Unuqie id
     public string Name; //Name shown on UI, etc
     public string LeaderboardID; //Leaderboard ID from Google Play
+    public ModeEnums Mode; //Made identifier, used by Google Play
 
     [Header("Timing Info")]
     public float AimTime; //How long it aims, befor shooting
@@ -32,7 +33,6 @@ public class DifficultyDataClass : ScriptableObject
     [Header("Projectiles Info")]
     public float ProjectileSpeed; //How fast the projectiles will be launced
 
-    [Header("Levels Info")]    
-    public bool endLess;
+    [Header("Levels Info")]
     public List<int> LevelsProjectiles; //List of the projectiles per level
 }

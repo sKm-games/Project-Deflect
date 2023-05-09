@@ -49,6 +49,9 @@ public class ReferencesController : MonoBehaviour
     [SerializeField] private AchievementController achievementController;
     public static AchievementController GetAchievementController;
 
+    [SerializeField] private EventsController eventController;
+    public static EventsController GetEventsController;
+
     [SerializeField] private BannerADController bannerADController;
     public static BannerADController GetBannerADController;
 
@@ -75,8 +78,9 @@ public class ReferencesController : MonoBehaviour
 
         GetGooglePlayController = googlePlayController;
         GetLeaderboardController = leaderboardController;
+        GetEventsController = eventController;
+        
         GetBannerADController = bannerADController;
-
         GetVideoADController = videoADController;
         GetAchievementController = achievementController;
     }

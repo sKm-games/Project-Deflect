@@ -4,6 +4,24 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+
+[System.Serializable]
+public class EventInfoClass
+{
+    public string StartedID;
+    public string CompletedID;
+    public string GameOverID;
+    public string RebuildID;
+    public string QuitID;
+}
+
+[System.Serializable]
+public class EndlessEventInfoClass
+{
+    public int LevelTrigger;
+    public string EventID;
+}
+
 [System.Serializable]
 public class MainMenuUIClass
 {

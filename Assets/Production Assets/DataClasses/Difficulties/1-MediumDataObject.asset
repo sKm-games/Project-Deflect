@@ -15,24 +15,17 @@ MonoBehaviour:
   ID: 1
   Name: Medium
   LeaderboardID: CgkIgMb1hfoVEAIQAw
-  BackgroundSprite: {fileID: 21300000, guid: 1b730abb058d1c0409754bba9d266caf, type: 3}
-  GroundSprite: {fileID: 21300000, guid: 66e97fa1f8e283e44b9c0b29e4a21607, type: 3}
-  MoonSprite: {fileID: 21300000, guid: 66e97fa1f8e283e44b9c0b29e4a21607, type: 3}
+  Mode: 1
   AimTime: 0.5
   ShotTime: 0.25
   NextShotDelay: 0.5
   NextLevelDelay: 1
   AimLaserSize: 0.05
   AimLaserColor: {r: 1, g: 0, b: 0, a: 1}
-  ShotLaserSize: 0.075
-  ShotLaserColor: {r: 1, g: 0.53926516, b: 0, a: 1}
+  ShotLaserSize: 0.1
+  ShotLaserColor: {r: 0.827451, g: 1, b: 0, a: 1}
   TargetAmount: 4
-  TargetPrefab: {fileID: 4595119058587561198, guid: 4325310eb703ae2498c85b3b62465bc4,
-    type: 3}
   BlockerScale: {x: 1.25, y: 0.25}
   BlockerColor: {r: 0.50980395, g: 0.79215693, b: 0.6117647, a: 1}
   ProjectileSpeed: 65
-  endLess: 0
   LevelsProjectiles: 01000000010000000200000001000000030000000200000003000000020000000400000002000000040000000200000003000000040000000200000003000000040000000500000003000000060000000400000002000000010000000100000002000000010000000300000005000000030000000400000006000000030000000100000004000000010000000200000003000000040000000500000006000000
-  MusicClip: {fileID: 0}
-  ShootClip: {fileID: 8300000, guid: 3e8e7c543abfabc4f9b8ea9f6b5d721c, type: 3}

@@ -10,7 +10,8 @@ public class ProjectileObject : MonoBehaviour
     
     private Rigidbody2D rb;
     private CircleCollider2D circleCol;
-    private bool removeOnce;    
+    private bool removeOnce;
+    private bool deflected;
 
     private void Awake()
     {           
@@ -19,7 +20,8 @@ public class ProjectileObject : MonoBehaviour
     }
 
     public void Launch(Transform sp, float speed)
-    {        
+    {
+        deflected = false;
         this.gameObject.SetActive(true);
         rb.transform.position = sp.transform.position;
         rb.velocity = sp.transform.up * speed;
@@ -38,12 +40,19 @@ public class ProjectileObject : MonoBehaviour
             Explosion();
             RemoveProjectile();
 
+            if (deflected)
+            {
+                ReferencesController.GetAchievementController.CheckOtherAchievements("FriendlyFire", 1);
+            }
+
             ReferencesController.GetSettingsController.CheckVibration(VibrationTriggerEnums.Hit);
         }
         else if (col.transform.tag == "Blocker")
         {
             ReferencesController.GetScoreController.UpdateScore(true);
             ReferencesController.GetSoundController.PlaySFX("deflect");
+
+            deflected = true;
 
             ReferencesController.GetSettingsController.CheckVibration(VibrationTriggerEnums.Hit);
         }
