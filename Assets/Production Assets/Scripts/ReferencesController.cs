@@ -58,6 +58,9 @@ public class ReferencesController : MonoBehaviour
     [SerializeField] private VideoADController videoADController;
     public static VideoADController GetVideoADController;
 
+    [SerializeField] private InterstitialADController interstitialADController;
+    public static InterstitialADController GetInterstitialADController;
+
     private void Awake()
     {
         GetCameraController = cameraController;        
@@ -83,5 +86,7 @@ public class ReferencesController : MonoBehaviour
         GetBannerADController = bannerADController;
         GetVideoADController = videoADController;
         GetAchievementController = achievementController;
+
+        GetInterstitialADController = interstitialADController;
     }
 }

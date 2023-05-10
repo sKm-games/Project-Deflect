@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using GooglePlayGames;
+using GooglePlayGames.BasicApi.Events;
 
 public class EventsController : MonoBehaviour
 {
@@ -22,13 +23,16 @@ public class EventsController : MonoBehaviour
     [SerializeField]
     private string projectilesLaunchedID;
 
+    [SerializeField]
+    private bool doDebug;
+
+    private void Awake()
+    {
+        PlayGamesPlatform.Activate();
+    }
+
     public void ModeStartedEvent()
     {
-        if (!GooglePlayController.CheckLogin())
-        {
-            return;
-        }
-
         ModeEnums mode = ReferencesController.GetDifficultyController.GetCurrentDifficulty.Mode;
         string id;
 
@@ -53,16 +57,14 @@ public class EventsController : MonoBehaviour
                 DebugSystem.UpdateDebugText($"EventsController: LevelEvent: Invalid Mode used {mode}");
                 return;
         }
-
-        PlayGamesPlatform.Instance.Events.IncrementEvent(id, 1);
+        
+        DebugSystem.UpdateDebugText($"EventsController: Do ModeStartedEvent with ID {id}",false, doDebug);
+        SendEventInfo(id, 1);
     }
 
     public void ModeCompletedEvent()
     {
-        if (!GooglePlayController.CheckLogin())
-        {
-            return;
-        }
+
         ModeEnums mode = ReferencesController.GetDifficultyController.GetCurrentDifficulty.Mode;
         string id;
         switch (mode)
@@ -86,16 +88,13 @@ public class EventsController : MonoBehaviour
                 DebugSystem.UpdateDebugText($"EventsController: ModeCompletedEvent: Invalid Mode used {mode}");
                 return;
         }
-
-        PlayGamesPlatform.Instance.Events.IncrementEvent(id, 1);
+        
+        DebugSystem.UpdateDebugText($"EventsController: Do ModeCompletedEvent with ID {id}", false, doDebug);
+        SendEventInfo(id, 1);
     }
 
     public void ModeGameOverEvent()
     {
-        if (!GooglePlayController.CheckLogin())
-        {
-            return;
-        }
         ModeEnums mode = ReferencesController.GetDifficultyController.GetCurrentDifficulty.Mode;
         string id;
         switch (mode)
@@ -120,16 +119,13 @@ public class EventsController : MonoBehaviour
                 return;
         }
 
-        PlayGamesPlatform.Instance.Events.IncrementEvent(id, 1);
+        DebugSystem.UpdateDebugText($"EventsController: Do ModeGameOverEvent with ID {id}", false, doDebug);
+        SendEventInfo(id, 1);
     }
 
 
     public void ModeQuitEvent()
     {
-        if (!GooglePlayController.CheckLogin())
-        {
-            return;
-        }
         ModeEnums mode = ReferencesController.GetDifficultyController.GetCurrentDifficulty.Mode;
         string id;
         switch (mode)
@@ -153,16 +149,13 @@ public class EventsController : MonoBehaviour
                 DebugSystem.UpdateDebugText($"EventsController: ModeQuitEvent: Invalid Mode used {mode}");
                 return;
         }
-
-        PlayGamesPlatform.Instance.Events.IncrementEvent(id, 1);
+        
+        SendEventInfo(id, 1);
+        DebugSystem.UpdateDebugText($"EventsController: Do ModeQuitEvent with ID {id}", false, doDebug);
     }
 
     public void RebuildEvent()
     {
-        if (!GooglePlayController.CheckLogin())
-        {
-            return;
-        }
         ModeEnums mode = ReferencesController.GetDifficultyController.GetCurrentDifficulty.Mode;
         string id;
         switch (mode)
@@ -185,36 +178,28 @@ public class EventsController : MonoBehaviour
             default:
                 DebugSystem.UpdateDebugText($"EventsController: RebuildEvent: Invalid Mode used {mode}");
                 return;
-        }
+        }       
 
-        PlayGamesPlatform.Instance.Events.IncrementEvent(id, 1);
+        SendEventInfo(id, 1);
+        DebugSystem.UpdateDebugText($"EventsController: Do RebuildEvent with ID {id}", false, doDebug);
     }
 
     public void DeflectionEvent(int d)
     {
-        if (!GooglePlayController.CheckLogin())
-        {
-            return;
-        }
-        PlayGamesPlatform.Instance.Events.IncrementEvent(deflectionsID, (uint)d);
+        SendEventInfo(deflectionsID, d);
+        DebugSystem.UpdateDebugText($"EventsController: Do DeflectionEvent with ID {deflectionsID}", false, doDebug);
     }
 
     public void TargetsDestroyedEvent(int t)
     {
-        if (!GooglePlayController.CheckLogin())
-        {
-            return;
-        }
-        PlayGamesPlatform.Instance.Events.IncrementEvent(targetsDestroydID, (uint)t);
+        SendEventInfo(targetsDestroydID, t);
+        DebugSystem.UpdateDebugText($"EventsController: Do TargetsDestroyedEvent with ID {targetsDestroydID}", false, doDebug);
     }
 
     public void ProjectilesLaunchedEvent(int p)
     {
-        if (!GooglePlayController.CheckLogin())
-        {
-            return;
-        }
-        PlayGamesPlatform.Instance.Events.IncrementEvent(projectilesLaunchedID, (uint)p);
+        SendEventInfo(projectilesLaunchedID, p);
+        DebugSystem.UpdateDebugText($"EventsController: Do ProjectilesLaunchedEvent with ID {projectilesLaunchedID}", false, doDebug);
     }
 
     public void CheckEndlessLevelEvent(int l)
@@ -228,10 +213,22 @@ public class EventsController : MonoBehaviour
         {
             if (e.LevelTrigger == l)
             {
-                PlayGamesPlatform.Instance.Events.IncrementEvent(e.EventID, 1);
+                SendEventInfo(e.EventID, l);
+                DebugSystem.UpdateDebugText($"EventsController: Do CheckEndlessLevelEvent with ID {e.EventID}", false, doDebug);
                 break;
             }
         }
+    }
+
+    private void SendEventInfo(string id, int a)
+    {
+        if (!GooglePlayController.CheckLogin())
+        {
+            DebugSystem.UpdateDebugText("EventsController: SendEventInfo: Skip, not logged in");
+            return;
+        }
+        PlayGamesPlatform.Instance.Events.IncrementEvent(id, (uint)a);
+        DebugSystem.UpdateDebugText($"EventsController: SendEventInfo with ID {id}");
     }
 }
 

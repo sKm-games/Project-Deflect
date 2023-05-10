@@ -25,7 +25,7 @@ public class EndlessEventInfoClass
 [System.Serializable]
 public class MainMenuUIClass
 {
-    public GameObject BackgroundImage;
+    public GameObject MainMenuHolder;
     public GameObject StartScreen;
     [Space]
     public GameObject ModeSelectScreen;
@@ -49,7 +49,8 @@ public class GameOverUIClass
 
 [System.Serializable]
 public class GameplayUIClass
-{   
+{
+    public GameObject GameUIHolder;
     public GameObject GameplayScreen;
     public TextMeshProUGUI LevelText;
     public TextMeshProUGUI ScoreText;

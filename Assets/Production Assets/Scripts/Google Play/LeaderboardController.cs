@@ -7,9 +7,12 @@ using GooglePlayGames;
 
 public class LeaderboardController : MonoBehaviour
 {
-    private ILeaderboard dayHighScore;    
-    private ILeaderboard weekHighScore;    
-    private ILeaderboard allTimeHighScore;
+    private int dayHighScore;
+    private int dayRank;
+    private int weekHighScore;
+    private int weekRank;
+    private int allTimeHighScore;
+    private int allTimeRank;
 
     public void PostScoreToLeaderboard(int s, string id)
     {
@@ -24,14 +27,15 @@ public class LeaderboardController : MonoBehaviour
         {
             if (success)
             {
-                DebugSystem.UpdateDebugText("HighscoreController: PostScoreToLeaderboard: Score posted");
-                LoadLeaderboardInfo(id, TimeScope.Week, true); //load to check achievements
+                DebugSystem.UpdateDebugText("HighscoreController: PostScoreToLeaderboard: Score posted");                
             }
             else
             {
                 DebugSystem.UpdateDebugText($"HighscoreController: PostScoreToLeaderboard: Score failed to post, using id: {id}");
             }
         });
+
+        CheckAchievements();
 #endif
     }
 
@@ -44,25 +48,16 @@ public class LeaderboardController : MonoBehaviour
             default:
                 break;
             case TimeScope.Today:
-                if (dayHighScore != null)
-                {
-                    s = (int)dayHighScore.localUserScore.value;
-                    r = dayHighScore.localUserScore.rank;
-                }
+                s = dayHighScore;
+                r = dayRank;
                 break;
             case TimeScope.Week:
-                if (weekHighScore != null)
-                {
-                    s = (int)dayHighScore.localUserScore.value;
-                    r = dayHighScore.localUserScore.rank;
-                }
+                s = weekHighScore;
+                r = weekRank;
                 break;
             case TimeScope.AllTime:
-                if (allTimeHighScore != null)
-                {
-                    s = (int)dayHighScore.localUserScore.value;
-                    r = dayHighScore.localUserScore.rank;
-                }
+                s = allTimeHighScore;
+                r = allTimeRank;
                 break;
         }
     }
@@ -92,49 +87,116 @@ public class LeaderboardController : MonoBehaviour
 #endif
     }
 
-    public void LoadLeaderboardInfo()
+    public void LoadAllLeaderboardInfo()
     {
 #if UNITY_ANDROID
+        string id = ReferencesController.GetDifficultyController.GetCurrentDifficulty.LeaderboardID;
+
         if (!GooglePlayController.CheckLogin())
         {
             DebugSystem.UpdateDebugText($"UIController: GetLeaderboardInfo: Failed to get leaderboard info, not logged in");
             return;
         }
 
-        string id = ReferencesController.GetDifficultyController.GetCurrentDifficulty.LeaderboardID;
+        /*
+        ILeaderboard temp = LoadLeaderboardInfo(id, TimeScope.Today);
+        if (temp != null)
+        {
+            dayHighScore = (int)temp.localUserScore.value;
+            dayRank = temp.localUserScore.rank;
+        }
+        temp = LoadLeaderboardInfo(id, TimeScope.Week);
+        if (temp != null)
+        {
+            weekHighScore = (int)temp.localUserScore.value;
+            weekRank = temp.localUserScore.rank;
+        }        
+        
+        temp = LoadLeaderboardInfo(id, TimeScope.AllTime);
 
-        dayHighScore = LoadLeaderboardInfo(id, TimeScope.Today);
-        weekHighScore = LoadLeaderboardInfo(id, TimeScope.Week);
-        allTimeHighScore = LoadLeaderboardInfo(id, TimeScope.AllTime);
+        if (temp != null)
+        {
+            allTimeHighScore = (int)temp.localUserScore.value;
+            allTimeRank = temp.localUserScore.rank;
+        }*/
+
+        LoadLeaderboardInfo(id, TimeScope.Today,
+            callback =>
+            {
+                if (callback != null)
+                {
+                    dayHighScore = (int)callback.localUserScore.value;
+                    dayRank = callback.localUserScore.rank;
+                }
+            });
+
+        LoadLeaderboardInfo(id, TimeScope.Week,
+            callback =>
+            {
+                if (callback != null)
+                {
+                    weekHighScore = (int)callback.localUserScore.value;
+                    weekRank = callback.localUserScore.rank;
+                }
+            });
+
+        LoadLeaderboardInfo(id, TimeScope.AllTime,
+            callback =>
+            {
+                if (callback != null)
+                {
+                    allTimeHighScore = (int)callback.localUserScore.value;
+                    allTimeRank = callback.localUserScore.rank;
+                }
+            });
 #endif
     }
 
-    private ILeaderboard LoadLeaderboardInfo(string id, TimeScope timeScope, bool checkAchive = false) //test for checking rank and score, to be used with achievements in the future
+    private void CheckAchievements()
+    {
+        string id = ReferencesController.GetDifficultyController.GetCurrentDifficulty.LeaderboardID;
+        LoadLeaderboardInfo(id, TimeScope.Week,
+            callback =>
+            {
+                if (callback != null)
+                {
+                    ReferencesController.GetAchievementController.CheckOtherAchievements("KingOfTheWeek", 1);
+                }
+            });        
+    }
+
+    IEnumerator LoadLeaderboardInfo(string id, TimeScope timeScope, System.Action<ILeaderboard> callBack) //test for checking rank and score, to be used with achievements in the future
     {
         DebugSystem.UpdateDebugText($"LeaderboardController: LoadLeaderboardInfo {timeScope}: Start");
-        
+
         ILeaderboard lb = PlayGamesPlatform.Instance.CreateLeaderboard();
         lb.id = id;
         lb.timeScope = timeScope;
-        
+
         lb.LoadScores(success =>
         {
             if (success)
             {
-                DebugSystem.UpdateDebugText($"LeaderboardController: LoadAllTimeScore: {timeScope} score found with rank {lb.localUserScore.rank} and score {lb.localUserScore.value}");
-                if (checkAchive)
-                {
-                    ReferencesController.GetAchievementController.CheckOtherAchievements("KingOfTheWeek", lb.localUserScore.rank);
-                }
+                DebugSystem.UpdateDebugText($"LeaderboardController: LoadLeaderboardInfo: {timeScope} score found with rank {lb.localUserScore.rank} and score {lb.localUserScore.value}");
             }
             else
             {
-                DebugSystem.UpdateDebugText($"LeaderboardController: LoadAllTimeScore: Failed to check {timeScope} score with id {lb.id}");
+                DebugSystem.UpdateDebugText($"LeaderboardController: LoadLeaderboardInfo: Failed to check {timeScope} score with id {lb.id}");
             }        
         });
 
-        return lb;
-    }    
+        float timeOut = 0;
+
+        while (lb.loading && timeOut < 10f)
+        {
+            timeOut += Time.deltaTime;           
+            yield return null;  
+        }
+
+        callBack(lb);
+    }
+
+
 
     #region Old
     /*

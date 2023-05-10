@@ -126,7 +126,7 @@ public class TargetObject : MonoBehaviour
 
         spriteRenderer.sprite = buildingSprites[0];
 
-        ReferencesController.GetSoundController.StopLoopSFX("fire");
+        ReferencesController.GetSoundController.StopLoopSFX("fire", true);
 
         targetCollider.enabled = true;
 

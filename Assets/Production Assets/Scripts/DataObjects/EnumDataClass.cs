@@ -20,3 +20,9 @@ public enum ModeEnums
     Easy, Medium, Hard, Impossible, Endless
 }
 
+[System.Serializable]
+public enum ValueCompareEnums
+{
+    None, Above, Equal, Below
+}
+

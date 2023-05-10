@@ -12,9 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8ee39b0305b62843b88a553e4ca11e0, type: 3}
   m_Name: 15_NeverGiveUp!
   m_EditorClassIdentifier: 
-  NameRef: NeverGiveUp!
   AchievementID: CgkIgMb1hfoVEAIQMw
   IncrementValue: 1
   Instant: 1
-  Target: 5
+  NameRef: NeverGiveUp!
+  Target: 4
+  TargetComparing: 1
   Mode: 0

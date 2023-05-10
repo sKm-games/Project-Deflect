@@ -58,17 +58,22 @@ public class SoundController : MonoBehaviour
         return a != null;
     }
 
-    public void StopLoopSFX(string id)
+    public void StopLoopSFX(string id, bool force)
     {
         SoundDataClass s = soundEffects.Find((y) => y.ID == id);
         AudioSource a = sfxAudiosources.Find((x) => x.clip == s.Clip && x.loop);
 
         if (a == null)
-        {
-            Debug.LogWarning($"SoundController: StopLoppSFX: source not found for sound {id}");
+        {            
             return;
         }
-        //a.Stop();
+
+        if (force)
+        {
+            //a.DOFade(0, 0.125f).OnComplete(() => a.Stop());
+            a.Stop();
+        }
+
         a.loop = false;
     }
 

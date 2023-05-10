@@ -64,10 +64,8 @@ public class LevelController : MonoBehaviour
         StartLevel();
         
         yield return new WaitForSeconds(1f);
-        if (alarm)
-        {
-            ReferencesController.GetSoundController.StopLoopSFX("alarm");
-        }        
+        
+        ReferencesController.GetSoundController.StopLoopSFX("alarm", true);
     }
 
     public void StopProgress()
@@ -95,7 +93,7 @@ public class LevelController : MonoBehaviour
             }
             else
             {
-                ReferencesController.GetGameController.GameIsOver(false);
+                ReferencesController.GetGameController.GameIsOver(true);
                 return;
             }            
         }
@@ -165,6 +163,12 @@ public class LevelController : MonoBehaviour
     public Transform GetTarget()
     {
         activeTargetsPoolList.Shuffle();
+
+        if (activeTargetsPoolList.Count == 0)
+        {
+            return previousTarget;
+        }
+
         if (activeTargetsPoolList[0].IsDead)
         {
             activeTargetsPoolList.RemoveAt(0);

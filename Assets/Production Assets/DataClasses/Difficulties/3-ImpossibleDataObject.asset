@@ -16,9 +16,9 @@ MonoBehaviour:
   Name: Impossible
   LeaderboardID: CgkIgMb1hfoVEAIQBQ
   Mode: 3
-  AimTime: 0.25
-  ShotTime: 0.125
-  NextShotDelay: 0.25
+  AimTime: 0.5
+  ShotTime: 0.25
+  NextShotDelay: 0.5
   NextLevelDelay: 0.5
   AimLaserSize: 0.05
   AimLaserColor: {r: 1, g: 0, b: 0, a: 1}

@@ -34,7 +34,7 @@ public class GameController : MonoBehaviour
     private void Start()
     {
         ReferencesController.GetSaveManager.GetSaveInfo();
-    }
+    }    
 
     public void StartGame(int d)
     {        
@@ -45,7 +45,9 @@ public class GameController : MonoBehaviour
             ReferencesController.GetScoreController.ResetScore();
             ReferencesController.GetDifficultyController.SetDifficutly(d);
             ReferencesController.GetLevelController.SetupLevel(true);
-            ReferencesController.GetLeaderboardController.LoadLeaderboardInfo();
+
+            ReferencesController.GetLeaderboardController.LoadAllLeaderboardInfo();
+
             gameIsRunning = true;
                         
             ReferencesController.GetBlockerController.Init(ReferencesController.GetDifficultyController.GetCurrentDifficulty);                        
@@ -55,7 +57,7 @@ public class GameController : MonoBehaviour
             ReferencesController.GetBlockerController.ToggleBlocker(true);
             Time.timeScale = 1;
 
-            ReferencesController.GetEventsController.ModeStartedEvent();
+            ReferencesController.GetEventsController.ModeStartedEvent();            
         }
     }
 
@@ -108,8 +110,7 @@ public class GameController : MonoBehaviour
         {
             ReferencesController.GetAchievementController.CheckOtherAchievements("PerfectVictory", activeLifes);
             ReferencesController.GetAchievementController.CheckOtherAchievements("PyrrhicVictory", activeLifes);
-        }
-        
+        }        
     }
 
     public void ReloadGame()

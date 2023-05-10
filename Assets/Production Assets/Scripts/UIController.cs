@@ -19,6 +19,14 @@ public class UIController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI versionText;
 
 
+    private void OnApplicationFocus(bool focus)
+    {
+        if (!focus && CheckScreenStatus("gameScreen"))
+        {
+            TogglePauseScreen(true);
+        }
+    }
+
     private void Awake()
     {
         versionText.text = $"v{Application.version}";
@@ -33,14 +41,14 @@ public class UIController : MonoBehaviour
 
     private void DefaultLayout()
     {
-        mainMenuUI.BackgroundImage.SetActive(true);
+        mainMenuUI.MainMenuHolder.SetActive(true);
         mainMenuUI.StartScreen.SetActive(true);
         mainMenuUI.ModeSelectScreen.SetActive(false);
         mainMenuUI.SettingsScreen.SetActive(false);
         mainMenuUI.GameInfoScreen.SetActive(false);
         mainMenuUI.CreditsScreen.SetActive(false);
 
-        
+        gameplayUI.GameUIHolder.SetActive(false);
         gameplayUI.GameplayScreen.SetActive(false);
         gameplayUI.PauseScreen.SetActive(false);
         gameplayUI.CountdownText.text = "0";
@@ -88,7 +96,8 @@ public class UIController : MonoBehaviour
     public void ModesToGame()
     {
         mainMenuUI.ModeSelectScreen.SetActive(false);
-        mainMenuUI.BackgroundImage.SetActive(false);
+        mainMenuUI.MainMenuHolder.SetActive(false);
+        gameplayUI.GameUIHolder.SetActive(true);
         gameplayUI.GameplayScreen.SetActive(true);        
         ReferencesController.GetSoundController.PlaySFX("button");
     }
@@ -111,22 +120,28 @@ public class UIController : MonoBehaviour
 
     public void PauseToStartScreen()
     {
+        ReferencesController.GetInterstitialADController.LoadAd();
+
+        ReferencesController.GetSoundController.StopLoopSFX("alarm", true);
+
         ReferencesController.GetLevelController.ResetTargets();
         ReferencesController.GetLevelController.StopProgress();
         ReferencesController.GetBlockerController.ToggleBlocker(false);
         ReferencesController.GetGameController.GameIsRunning = false;
-
-        ReferencesController.GetEventsController.ModeQuitEvent();
+        ReferencesController.GetEventsController.ModeQuitEvent();        
 
         DefaultLayout();
     }
 
     public void GameOverToStartScreen()
     {
+        ReferencesController.GetInterstitialADController.LoadAd();
+
         ReferencesController.GetLevelController.ResetTargets();
         ReferencesController.GetLevelController.StopProgress();
         ReferencesController.GetBlockerController.ToggleBlocker(false);
         ReferencesController.GetGameController.GameIsRunning = false;
+
         DefaultLayout();
     }
 
@@ -166,7 +181,7 @@ public class UIController : MonoBehaviour
             gameOverUI.TitleText.text = w ? "Winner!" : "Game Over!";
             string colorString = ColorUtility.ToHtmlStringRGBA(gameOverUI.HighScoreTextColor);
             Debug.Log($"colorString {colorString}");
-            gameOverUI.ScoreText.text = newHighScore ? $"<b><color=#{colorString}>New \nHigh Score</b></color>\nScore: \n{score}" : $"\n\nScore: \n{score}";
+            gameOverUI.ScoreText.text = newHighScore ? $"<b><color=#{colorString}>New \nHigh Score</b></color>\nScore \n{score}" : $"\n\nScore \n{score}";
 
             ReferencesController.GetVideoADController.LoadVideoAD();
             ReferencesController.GetVideoADController.ToggleAdButton(0, !w);
@@ -180,10 +195,11 @@ public class UIController : MonoBehaviour
             else
             {
                 ReferencesController.GetEventsController.ModeGameOverEvent();
-            }
+            }            
         }
 
         gameOverUI.GameOverScreen.SetActive(b);
+        gameplayUI.GameplayScreen.SetActive(!b);
         gameplayUI.PauseScreen.SetActive(false);        
     }
 
@@ -194,7 +210,11 @@ public class UIController : MonoBehaviour
 
         if (!b)
         {
-            ReferencesController.GetSaveManager.AddToSave("", 0, 0);   
+            ReferencesController.GetSaveManager.AddToSave("", 0, 0);
+        }
+        else
+        {
+            ReferencesController.GetSoundController.StopLoopSFX("alarm", false);
         }
 
         Time.timeScale = b ? 0 : 1;
@@ -207,6 +227,8 @@ public class UIController : MonoBehaviour
         {
             case "startScreen":
                 return mainMenuUI.StartScreen.activeSelf;
+            case "gameScreen":
+                return gameplayUI.GameplayScreen.activeSelf;
         }
         DebugSystem.UpdateDebugText($"UIController: CheckScreenStatus: Invalid ID {id}");
         return false;        

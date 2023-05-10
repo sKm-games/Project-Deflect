@@ -59,29 +59,31 @@ public class AchievementController : MonoBehaviour
 
     public void CheckLevelAchievements(int l)
     {
-        if (!GooglePlayController.CheckLogin()) //not logged in skip
-        {
-            DebugSystem.UpdateDebugText($"AchievementController: CheckLevelAchievements: Not logged in", false, doDebug);
-            return;
-        }
         ModeEnums mode = ReferencesController.GetDifficultyController.GetCurrentDifficulty.Mode;
 
         foreach (AchievementsDataClass ad in modeLevelsDataList)
         {
-            if (ad.Target >= l && mode == ad.Mode)
+            if (mode == ad.Mode)
             {
-                CheckAchievement(ad);
+                if (ad.TargetComparing == ValueCompareEnums.Above && ad.Target > l)
+                {
+                    CheckAchievement(ad);
+                }
+                else if (ad.TargetComparing == ValueCompareEnums.Equal && ad.Target == l)
+                {
+                    CheckAchievement(ad);
+                }
+                else if (ad.TargetComparing == ValueCompareEnums.Below && ad.Target < l)
+                {
+                    CheckAchievement(ad);
+                }
             }
+            
         }
     }
 
     public void CheckModeDoneAchievements()
     {
-        if (!GooglePlayController.CheckLogin()) //not logged in skip
-        {
-            DebugSystem.UpdateDebugText($"AchievementController: CheckModeDoneAchievements: Not logged in", false, doDebug);
-            return;
-        }
         ModeEnums mode = ReferencesController.GetDifficultyController.GetCurrentDifficulty.Mode;
 
         switch (mode)
@@ -106,11 +108,6 @@ public class AchievementController : MonoBehaviour
 
     public void CheckDeflectedAchievements()
     {
-        if (!GooglePlayController.CheckLogin()) //not logged in skip
-        {
-            DebugSystem.UpdateDebugText($"AchievementController: CheckAchievement: Not logged in", false, doDebug);
-            return;
-        }
         foreach (AchievementsDataClass ad in deflectionsDataList)
         {
             CheckAchievement(ad);
@@ -119,31 +116,30 @@ public class AchievementController : MonoBehaviour
 
     public void CheckTargetAchievements()
     {
-        if (!GooglePlayController.CheckLogin()) //not logged in skip
-        {
-            DebugSystem.UpdateDebugText($"AchievementController: CheckAchievement: Not logged in", false, doDebug);
-            return;
-        }
         foreach (AchievementsDataClass ad in targetsDataList)
         {
             CheckAchievement(ad);
         }
     }
 
-    public void CheckOtherAchievements(string id, int target = 0)
+    public void CheckOtherAchievements(string id, int target)
     {
-        if (!GooglePlayController.CheckLogin()) //not logged in skip
-        {
-            DebugSystem.UpdateDebugText($"AchievementController: CheckOtherAchievements: Not logged in", false, doDebug);
-            return;
-        }
-
         foreach (AchievementsDataClass ad in othersDataList)
         {
-            if (ad.NameRef == id && ad.Target >= target)
+            if (ad.NameRef == id)
             {
-                CheckAchievement(ad);
-                return;
+                if (ad.TargetComparing == ValueCompareEnums.Above && target > ad.Target)
+                {
+                    CheckAchievement(ad);
+                }
+                else if (ad.TargetComparing == ValueCompareEnums.Equal && target == ad.Target)
+                {
+                    CheckAchievement(ad);
+                }
+                else if (ad.TargetComparing == ValueCompareEnums.Below && target < ad.Target)
+                {
+                    CheckAchievement(ad);
+                }
             }                
         }
     }
@@ -155,9 +151,16 @@ public class AchievementController : MonoBehaviour
 
         if (ad == null)
         {
-            DebugSystem.UpdateDebugText($"AchievementController: CheckAchievement: Invalid nameRef {ad.NameRef}", true, doDebug);
+            DebugSystem.UpdateDebugText($"AchievementController: CheckAchievement: Invalid Achievement Ref", true, doDebug);
             return;
         }
+
+        if (!GooglePlayController.CheckLogin()) //not logged in skip
+        {
+            DebugSystem.UpdateDebugText($"AchievementController: CheckAchievement: Not logged in", false, doDebug);
+            return;
+        }
+
 
         if (ad.Instant)
         {

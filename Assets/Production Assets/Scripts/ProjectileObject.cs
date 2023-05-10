@@ -12,6 +12,7 @@ public class ProjectileObject : MonoBehaviour
     private CircleCollider2D circleCol;
     private bool removeOnce;
     private bool deflected;
+    private bool runOnce;
 
     private void Awake()
     {           
@@ -21,6 +22,7 @@ public class ProjectileObject : MonoBehaviour
 
     public void Launch(Transform sp, float speed)
     {
+        runOnce = false;
         deflected = false;
         this.gameObject.SetActive(true);
         rb.transform.position = sp.transform.position;
@@ -32,8 +34,9 @@ public class ProjectileObject : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D col)
     {
-        if (col.transform.tag == "Player")
+        if (col.transform.tag == "Player" && !runOnce)
         {
+            runOnce = true;
             ReferencesController.GetScoreController.UpdateScore(false);
             TargetObject b = col.transform.GetComponent<TargetObject>();
             b.TakeDamage();            

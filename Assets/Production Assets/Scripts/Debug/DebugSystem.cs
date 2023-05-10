@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
+using GooglePlayGames;
 
 public class DebugSystem : MonoBehaviour
 {
@@ -160,6 +161,11 @@ public class DebugSystem : MonoBehaviour
             string s = "Ray hit: " + rr.gameObject.name + " in " + rr.gameObject.transform.parent.name;
             UpdateDebugText(s);
         }
+        
+    }
+
+    public void DebugRetriveEvents()
+    {
         
     }
 
