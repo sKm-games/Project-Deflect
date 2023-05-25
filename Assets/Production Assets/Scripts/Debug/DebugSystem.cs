@@ -164,9 +164,11 @@ public class DebugSystem : MonoBehaviour
         
     }
 
-    public void DebugRetriveEvents()
+    public void DebugToggleADs()
     {
-        
+        ReferencesController.GetBannerADController.ToggleADs();
+        ReferencesController.GetVideoADController.ToggleADs();
+        ReferencesController.GetInterstitialADController.ToggleADs();
     }
 
     private void OnValidate()

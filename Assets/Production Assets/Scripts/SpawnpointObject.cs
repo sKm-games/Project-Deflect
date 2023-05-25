@@ -30,7 +30,7 @@ public class SpawnpointObject : MonoBehaviour
     {
         isReady = false;
         lineRenderer.enabled = true;
-        c = new Color(c.r, c.g, c.b, 0);
+        //c = new Color(c.r, c.g, c.b, 0);
 
         lineRenderer.startWidth = s;
         lineRenderer.startColor = c;
@@ -48,14 +48,15 @@ public class SpawnpointObject : MonoBehaviour
     {
         Color c = lineRenderer.startColor;
         c = new Color(c.r, c.g, c.b, a);
-        //lineRenderer.startColor = c;
+        lineRenderer.startColor = c;
         lineRenderer.endColor = c;
     }
 
     public void SetShootInfo(float s, Color c)
     {
         lineRenderer.startWidth = s;
-        lineRenderer.startColor = new Color(c.r, c.g, c.b , 0);
+        //lineRenderer.startColor = new Color(c.r, c.g, c.b , 0);
+        lineRenderer.startColor = c;
         
         lineRenderer.endWidth = s;
         lineRenderer.endColor = c;        

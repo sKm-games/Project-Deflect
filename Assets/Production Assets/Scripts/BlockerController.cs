@@ -25,6 +25,8 @@ public class BlockerController : MonoBehaviour
     [SerializeField] private float editorOffset;
     private float offset;
 
+    [SerializeField] private bool horMove;
+
     private void Awake()
     {
 #if UNITY_ANDROID
@@ -37,22 +39,36 @@ public class BlockerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (!allowMove)
+        if (!allowMove && ReferencesController.GetGameController.GameIsRunning)
         {
             return;
         }
 
-        if (Input.GetButton("Fire1"))
+        if (!horMove)
         {
-            AddativeRotation();
-        }
 
-        CheckValidRotation();
+            if (Input.GetButton("Fire1"))
+            {
+                AddativeRotation();
+            }
 
-        /*if (allowMove)
+            CheckValidRotation();
+
+            /*if (allowMove)
         {
             DirectRotateBlocker();
         }*/
+
+        }
+        else
+        {
+            if (Input.GetButton("Fire1"))
+            {
+                HorizontalMove();
+            }
+
+            CheckHorizontalPos();
+        }
     }
 
     public void Init(DifficultyDataClass data)
@@ -81,7 +97,7 @@ public class BlockerController : MonoBehaviour
             Quaternion q = blockerPivot.rotation;
             blockerPivot.rotation = new Quaternion(q.x, q.y, rotationLimit, q.w);
         }
-    }
+    }    
 
     private void DirectRotateBlocker() //rotatet toward mouse
     {
@@ -95,9 +111,36 @@ public class BlockerController : MonoBehaviour
         }        
     }
 
+    private void HorizontalMove()
+    {
+        Vector3 newPos = blockerPivot.transform.localPosition;
+        Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        float diff = mousePos.x - newPos.x;
+        float newX = (newPos.x + diff) * sensitivity;
+        
+        newPos = new Vector3(newX, newPos.y, newPos.z);
+
+        blockerPivot.transform.localPosition = newPos;
+    }
+
+    private void CheckHorizontalPos()
+    {
+        Vector3 newPos = blockerPivot.transform.localPosition;
+        if (newPos.x < -2.5f)
+        {
+
+            blockerPivot.transform.localPosition = new Vector3(-2.5f, newPos.y, newPos.z);
+        }
+        else if (newPos.x > 2.5f)
+        {
+            blockerPivot.transform.localPosition = new Vector3(2.5f, newPos.y, newPos.z);
+        }
+    }
+
     public void ToggleBlocker(bool b)
     {
         blockerPivot.rotation = Quaternion.Euler(0, 0, 0);
+        blockerPivot.transform.localPosition = new Vector3(0, blockerPivot.transform.localPosition.y, 0);
         allowMove = b;
         blockerPivot.gameObject.SetActive(b);
     }

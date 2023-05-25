@@ -12,6 +12,8 @@ public class InterstitialADController : MonoBehaviour, IUnityAdsLoadListener, IU
     int trigger;
     [SerializeField] private bool doDebug;
 
+    private bool disableAds;
+
     // Load content to the Ad Unit:
     public void LoadAd()
     {
@@ -28,6 +30,10 @@ public class InterstitialADController : MonoBehaviour, IUnityAdsLoadListener, IU
     // Show the loaded content in the Ad Unit:
     public void ShowAd()
     {
+        if (disableAds)
+        {
+            return;
+        }
         // Note that if the ad content wasn't previously loaded, this method will fail
         DebugSystem.UpdateDebugText($"InterstitialADController: Show Ad: {myPlacementID}", false, doDebug);
         Advertisement.Show(myPlacementID, this);
@@ -61,5 +67,10 @@ public class InterstitialADController : MonoBehaviour, IUnityAdsLoadListener, IU
     }
     public void OnUnityAdsShowComplete(string _adUnitId, UnityAdsShowCompletionState showCompletionState)
     {
+    }
+
+    public void ToggleADs()
+    {
+        disableAds = !disableAds;
     }
 }

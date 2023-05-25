@@ -17,6 +17,8 @@ public class VideoADController : MonoBehaviour, IUnityAdsLoadListener, IUnityAds
     [SerializeField] string myPlacementId = "Rewarded_Android";
     [SerializeField] int adID; //0 - game over, 1 - redo throw
 
+    private bool disabledADs;
+
     public void Init()
     {                        
         bannerAD = GetComponent<BannerADController>();
@@ -54,21 +56,23 @@ public class VideoADController : MonoBehaviour, IUnityAdsLoadListener, IUnityAds
 
     public void TriggerVideoAD(int id)
     {
-        if (Advertisement.isInitialized)
+        if (!Advertisement.isInitialized || disabledADs)
         {
-            //Advertisement.Load(myPlacementId, this);
+            return;
+        }
 
-            adID = id;
-            bannerAD.ToggleBannerAD(false);
-            Debug.Log("Showing Video AD");
-            Advertisement.Show(myPlacementId, this);
-            switch (adID)
-            {
-                default:
-                case 0:
-                    ToggleAdButton(0, false);
-                    break;
-            }
+        //Advertisement.Load(myPlacementId, this);
+
+        adID = id;
+        bannerAD.ToggleBannerAD(false);
+        Debug.Log("Showing Video AD");
+        Advertisement.Show(myPlacementId, this);
+        switch (adID)
+        {
+            default:
+            case 0:
+                ToggleAdButton(0, false);
+                break;
         }
     }
 
@@ -187,6 +191,11 @@ public class VideoADController : MonoBehaviour, IUnityAdsLoadListener, IUnityAds
     {
         ReferencesController.GetGameController.VideoContinue();
         yield return new WaitForSeconds(0.5f); //delay to allow video ad UI to close befor effect run, looks better
+    }
+
+    public void ToggleADs()
+    {
+        disabledADs = !disabledADs;
     }
 
 }

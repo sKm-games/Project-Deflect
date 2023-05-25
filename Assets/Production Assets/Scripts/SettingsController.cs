@@ -167,8 +167,12 @@ public class SettingsController : MonoBehaviour
         ReferencesController.GetSoundController.UpdateMusic(m);
 
         sensitivitySliderPause.SetValueWithoutNotify(sens);
+        sensitivitySliderTextPause.text = $"Sensetivity: {sens}";
         sensitivitySliderSettings.SetValueWithoutNotify(sens);
+        sensitivitySliderTextSettings.text = $"Sensetivity: {sens}";
         ReferencesController.GetBlockerController.UpdateSensitivity(sens);
+
+        Debug.Log($"Sense: {sens}");
 
         countdownAlarmTogglePause.SetIsOnWithoutNotify(a == 1);
         countdownAlarmToggleSettings.SetIsOnWithoutNotify(a == 1);

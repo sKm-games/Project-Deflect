@@ -20,6 +20,8 @@ public class BannerADController : MonoBehaviour
         }
     }
 
+    private bool disableADs;
+
     private void OnEnable()
     {
         CheckPlaceholder();
@@ -45,8 +47,11 @@ public class BannerADController : MonoBehaviour
     public void ToggleBannerAD(bool active)
     {
         isActive = active;
-        if (!Advertisement.isInitialized)
+        if (!Advertisement.isInitialized || disableADs)
         {
+            Advertisement.Banner.Hide(true);
+            placeHolderAD.SetActive(false);
+            Debug.Log("Hide banner");
             return;
         }
         if (active)
@@ -124,4 +129,10 @@ public class BannerADController : MonoBehaviour
         DebugSystem.UpdateDebugText($"Banner Error: {message}", true);        
         // Optionally execute additional code, such as attempting to load another ad.
     }    
+
+    public void ToggleADs()
+    {
+        disableADs = !disableADs;
+        ToggleBannerAD(disableADs);
+    }
 }
